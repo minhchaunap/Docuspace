@@ -1,0 +1,3687 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full bg-slate-50">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DocuSpace Pro - Hệ thống Lưu trữ & Ghi chú Chuyên nghiệp</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              300: '#a5b4fc',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+            },
+            word: '#2b579a',
+            excel: '#217346',
+            ppt: '#d24726',
+            note: '#d97706',
+            zalo: '#0068ff',
+            gmail: '#ea4335',
+            drive: '#0f9d58'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    [contenteditable]:empty:before {
+      content: attr(data-placeholder);
+      color: #94a3b8;
+      pointer-events: none;
+    }
+    .grid-cell:focus {
+      outline: 2px solid #4f46e5;
+      background-color: #eef2ff;
+    }
+  </style>
+</head>
+<body class="h-full text-slate-800 flex flex-col font-sans antialiased select-none overflow-hidden">
+
+  <!-- TOP NAVBAR -->
+  <header class="bg-white border-b border-slate-200 h-16 flex-shrink-0 flex items-center justify-between px-4 sm:px-6 z-20">
+    <div class="flex items-center gap-3">
+      <!-- Mobile sidebar toggle -->
+      <button id="mobileMenuBtn" class="lg:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100 focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+
+      <!-- App Logo & Name -->
+      <div class="flex items-center gap-2.5 cursor-pointer" id="brandLogoBtn">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-primary-500 to-indigo-400 flex items-center justify-center text-white shadow-md shadow-indigo-100">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+        </div>
+        <div>
+          <span class="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-1.5">
+            DocuSpace <span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-0.5 rounded-full font-semibold">Pro</span>
+          </span>
+          <span class="text-[11px] text-slate-500 block -mt-0.5 font-medium">Lưu trữ & Quản lý Tài liệu Đa năng</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="flex-1 max-w-xl mx-4 hidden md:block">
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
+        <input type="text" id="searchInput" placeholder="Tìm kiếm tài liệu, thư mục, ghi chú, thẻ tag..." 
+          class="w-full pl-10 pr-10 py-2 bg-slate-100/80 hover:bg-slate-100 focus:bg-white text-sm rounded-xl border border-transparent focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 transition-all outline-none text-slate-800 placeholder-slate-400">
+        <button id="clearSearchBtn" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 hidden">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Utilities -->
+    <div class="flex items-center gap-2">
+      <!-- Sync Status Badge -->
+      <div class="hidden sm:flex items-center gap-1.5 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2.5 py-1 rounded-full">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="font-medium">Đã đồng bộ Drive & Cloud</span>
+      </div>
+
+      <!-- Quick Upload Button -->
+      <button id="topBackupBtn" class="flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors" title="Tải xuống toàn bộ dữ liệu">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        <span class="hidden md:inline">Sao lưu dữ liệu</span>
+      </button>
+      <button id="topUploadBtn" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">
+        <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+        <span class="hidden sm:inline">Tải tệp lên</span>
+      </button>
+
+      <!-- User avatar -->
+      <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs font-bold border-2 border-white shadow-sm ml-1" title="Tài khoản làm việc">
+        VN
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER (SIDEBAR + CONTENT) -->
+  <div class="flex-1 flex overflow-hidden relative">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col flex-shrink-0 absolute lg:static inset-y-0 left-0 z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out">
+      <!-- New Item Action -->
+      <div class="p-4 border-b border-slate-100">
+        <div class="relative">
+          <button id="newItemDropdownBtn" class="w-full flex items-center justify-center gap-2.5 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 px-4 rounded-xl font-medium text-sm shadow-md shadow-indigo-200 hover:shadow-indigo-300 transition-all">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <span>Tạo mới & Thêm</span>
+            <svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+
+          <!-- Dropdown menu -->
+          <div id="newItemMenu" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50 animate-in fade-in zoom-in-95 duration-100">
+            <button id="menuNewFolder" class="w-full text-left px-3.5 py-2 hover:bg-indigo-50 text-slate-700 hover:text-indigo-600 text-sm flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
+              </span>
+              <div>
+                <span class="font-medium block">Thư mục mới</span>
+                <span class="text-[11px] text-slate-400">Tạo folder tổ chức file</span>
+              </div>
+            </button>
+            <div class="h-px bg-slate-100 my-1"></div>
+            <button id="menuNewWord" class="w-full text-left px-3.5 py-2 hover:bg-blue-50 text-slate-700 hover:text-blue-600 text-sm flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs">W</span>
+              <div>
+                <span class="font-medium block">Văn bản Word (.docx)</span>
+                <span class="text-[11px] text-slate-400">Văn bản, hợp đồng, báo cáo</span>
+              </div>
+            </button>
+            <button id="menuNewExcel" class="w-full text-left px-3.5 py-2 hover:bg-emerald-50 text-slate-700 hover:text-emerald-600 text-sm flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xs">X</span>
+              <div>
+                <span class="font-medium block">Bảng tính Excel (.xlsx)</span>
+                <span class="text-[11px] text-slate-400">Bảng tính, công thức, số liệu</span>
+              </div>
+            </button>
+            <button id="menuNewPPT" class="w-full text-left px-3.5 py-2 hover:bg-orange-50 text-slate-700 hover:text-orange-600 text-sm flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-xs">P</span>
+              <div>
+                <span class="font-medium block">Trình chiếu PowerPoint (.pptx)</span>
+                <span class="text-[11px] text-slate-400">Slide bài giảng, thuyết trình</span>
+              </div>
+            </button>
+            <button id="menuNewNote" class="w-full text-left px-3.5 py-2 hover:bg-amber-50 text-slate-700 hover:text-amber-600 text-sm flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              </span>
+              <div>
+                <span class="font-medium block">Ghi chú Note chuyên nghiệp</span>
+                <span class="text-[11px] text-slate-400">Todo, việc cần làm, ý tưởng</span>
+              </div>
+            </button>
+            <div class="h-px bg-slate-100 my-1"></div>
+            <button id="menuUploadFile" class="w-full text-left px-3.5 py-2 hover:bg-slate-100 text-slate-700 text-sm flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+              </span>
+              <div>
+                <span class="font-medium block">Tải tệp từ máy tính</span>
+                <span class="text-[11px] text-slate-400">Hỗ trợ mọi định dạng</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation links -->
+      <div class="flex-1 overflow-y-auto px-3 py-3 space-y-6">
+        <div>
+          <span class="text-[11px] uppercase tracking-wider font-semibold text-slate-400 px-3">Kho lưu trữ</span>
+          <nav class="mt-2 space-y-1">
+            <button data-nav="all" class="nav-item w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-xl text-indigo-700 bg-indigo-50/80 transition-colors">
+              <span class="flex items-center gap-3">
+                <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
+                <span>Tất cả tài liệu</span>
+              </span>
+              <span id="badgeAllCount" class="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-semibold">12</span>
+            </button>
+            <button data-nav="starred" class="nav-item w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
+              <span class="flex items-center gap-3">
+                <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <span>Đã gắn dấu sao</span>
+              </span>
+              <span id="badgeStarredCount" class="text-xs text-slate-400 px-2">3</span>
+            </button>
+            <button data-nav="recent" class="nav-item w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
+              <span class="flex items-center gap-3">
+                <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span>Mở gần đây</span>
+              </span>
+            </button>
+            <button data-nav="trash" class="nav-item w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
+              <span class="flex items-center gap-3">
+                <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                <span>Thùng rác</span>
+              </span>
+              <span id="badgeTrashCount" class="text-xs text-slate-400 px-2">1</span>
+            </button>
+          </nav>
+        </div>
+
+        <div>
+          <span class="text-[11px] uppercase tracking-wider font-semibold text-slate-400 px-3">Phân loại tệp</span>
+          <nav class="mt-2 space-y-1">
+            <button data-nav="type_word" class="nav-item w-full flex items-center justify-between px-3 py-1.5 text-sm font-medium rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
+              <span class="flex items-center gap-3">
+                <span class="w-5 h-5 rounded bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-[10px]">W</span>
+                <span>Tài liệu Word</span>
+              </span>
+            </button>
+            <button data-nav="type_excel" class="nav-item w-full flex items-center justify-between px-3 py-1.5 text-sm font-medium rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
+              <span class="flex items-center gap-3">
+                <span class="w-5 h-5 rounded bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-[10px]">X</span>
+                <span>Bảng tính Excel</span>
+              </span>
+            </button>
+            <button data-nav="type_powerpoint" class="nav-item w-full flex items-center justify-between px-3 py-1.5 text-sm font-medium rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
+              <span class="flex items-center gap-3">
+                <span class="w-5 h-5 rounded bg-orange-100 text-orange-700 flex items-center justify-center font-bold text-[10px]">P</span>
+                <span>PowerPoint Slide</span>
+              </span>
+            </button>
+            <button data-nav="type_note" class="nav-item w-full flex items-center justify-between px-3 py-1.5 text-sm font-medium rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
+              <span class="flex items-center gap-3">
+                <span class="w-5 h-5 rounded bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-[10px]">N</span>
+                <span>Ghi chú Note</span>
+              </span>
+            </button>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Storage status widget -->
+      <div class="p-4 border-t border-slate-200 bg-slate-50">
+        <div class="flex items-center justify-between text-xs mb-1.5">
+          <span class="font-medium text-slate-700">Dung lượng sử dụng</span>
+          <span class="text-indigo-600 font-semibold" id="storagePercentText">28%</span>
+        </div>
+        <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+          <div id="storageProgressBar" class="h-full bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full transition-all duration-300" style="width: 28%"></div>
+        </div>
+        <div class="flex justify-between items-center text-[11px] text-slate-500 mt-1.5">
+          <span id="storageUsedText">4.2 GB đã dùng</span>
+          <span>15 GB tối đa</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- BACKDROP FOR MOBILE SIDEBAR -->
+    <div id="sidebarBackdrop" class="fixed inset-0 bg-slate-900/40 z-20 hidden lg:hidden"></div>
+
+    <!-- MAIN WORKSPACE CONTENT -->
+    <main class="flex-1 flex flex-col bg-slate-50 overflow-hidden">
+      
+      <!-- SUBHEADER / TOOLBAR -->
+      <div class="bg-white border-b border-slate-200 px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3 flex-shrink-0">
+        
+        <!-- Breadcrumbs Navigation -->
+        <div class="flex items-center gap-1.5 text-sm overflow-x-auto py-1" id="breadcrumbContainer">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Action Controls -->
+        <div class="flex items-center gap-2">
+          <!-- Filter or Empty Trash button (shows in trash view) -->
+          <button id="emptyTrashBtn" class="hidden items-center gap-1.5 px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold rounded-lg border border-rose-200 transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            <span>Dọn sạch thùng rác</span>
+          </button>
+
+          <!-- Sort Selector -->
+          <div class="relative">
+            <button id="sortDropdownBtn" class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium transition-colors">
+              <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/></svg>
+              <span id="currentSortLabel">Mới cập nhật</span>
+              <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div id="sortMenu" class="hidden absolute right-0 mt-1 w-44 bg-white rounded-xl shadow-lg border border-slate-100 py-1.5 z-40 text-xs">
+              <button data-sort="updated" class="sort-option w-full text-left px-3 py-1.5 hover:bg-indigo-50 hover:text-indigo-600 font-medium flex items-center justify-between">
+                <span>Mới cập nhật nhất</span>
+                <span class="sort-check text-indigo-600">✓</span>
+              </button>
+              <button data-sort="name_asc" class="sort-option w-full text-left px-3 py-1.5 hover:bg-indigo-50 hover:text-indigo-600 font-medium flex items-center justify-between">
+                <span>Tên (A đến Z)</span>
+                <span class="sort-check text-indigo-600 hidden">✓</span>
+              </button>
+              <button data-sort="name_desc" class="sort-option w-full text-left px-3 py-1.5 hover:bg-indigo-50 hover:text-indigo-600 font-medium flex items-center justify-between">
+                <span>Tên (Z đến A)</span>
+                <span class="sort-check text-indigo-600 hidden">✓</span>
+              </button>
+              <button data-sort="size" class="sort-option w-full text-left px-3 py-1.5 hover:bg-indigo-50 hover:text-indigo-600 font-medium flex items-center justify-between">
+                <span>Kích thước tệp</span>
+                <span class="sort-check text-indigo-600 hidden">✓</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- View Mode Toggle: Grid vs List -->
+          <div class="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200/80">
+            <button id="viewGridBtn" class="p-1.5 rounded-md bg-white text-indigo-600 shadow-sm" title="Xem dạng lưới">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+            </button>
+            <button id="viewListBtn" class="p-1.5 rounded-md text-slate-500 hover:text-slate-800" title="Xem dạng danh sách">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+          </div>
+
+          <!-- Quick Folder Creation -->
+          <button id="quickNewFolderBtn" class="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg text-xs font-semibold transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+            <span class="hidden sm:inline">Folder mới</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- WORKSPACE FILE LIST / GRID VIEW -->
+      <div class="flex-1 overflow-y-auto p-4 sm:p-6" id="workspaceContainer">
+        
+        <!-- Search/Filter Info banner when active -->
+        <div id="filterInfoBanner" class="hidden mb-4 p-3 bg-indigo-50/70 border border-indigo-100 rounded-xl flex items-center justify-between text-xs text-indigo-900">
+          <div class="flex items-center gap-2">
+            <span id="filterBannerText">Đang lọc kết quả...</span>
+          </div>
+          <button id="resetFilterBtn" class="text-indigo-600 font-semibold hover:underline">Xoá bộ lọc</button>
+        </div>
+
+        <!-- Section: Folders (if any) -->
+        <div id="foldersSection" class="mb-6">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+              <span>Thư mục</span>
+              <span id="folderCountLabel" class="text-[11px] bg-slate-200 text-slate-600 px-1.5 py-0.2 rounded font-medium">0</span>
+            </h2>
+          </div>
+          <div id="foldersContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Section: Files & Documents -->
+        <div id="filesSection">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+              <span>Tài liệu & Tệp</span>
+              <span id="fileCountLabel" class="text-[11px] bg-slate-200 text-slate-600 px-1.5 py-0.2 rounded font-medium">0</span>
+            </h2>
+          </div>
+          <div id="filesContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Empty State View -->
+        <div id="emptyStateView" class="hidden flex-col items-center justify-center py-16 text-center">
+          <div class="w-20 h-20 rounded-2xl bg-indigo-50 text-indigo-400 flex items-center justify-center mb-4">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"/></svg>
+          </div>
+          <h3 class="text-base font-bold text-slate-700" id="emptyTitle">Thư mục này chưa có tệp nào</h3>
+          <p class="text-xs text-slate-400 max-w-sm mt-1" id="emptySubtitle">Bạn có thể tạo tài liệu Word, Excel, PowerPoint, Note hoặc tải tệp lên từ máy tính.</p>
+          <div class="mt-4 flex items-center gap-2">
+            <button id="emptyCreateFolderBtn" class="px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-xs font-semibold transition-colors">
+              + Tạo thư mục
+            </button>
+            <button id="emptyCreateDocBtn" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-sm transition-colors">
+              + Tạo tài liệu mới
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ==================== MODALS & EDITORS ==================== -->
+
+  <!-- MODAL: CREATE NEW FOLDER -->
+  <div id="newFolderModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-5 border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
+          </div>
+          <h3 class="text-base font-bold text-slate-900">Tạo thư mục mới</h3>
+        </div>
+        <button id="closeNewFolderModalBtn" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Tên thư mục</label>
+          <input type="text" id="newFolderNameInput" placeholder="Ví dụ: Tài liệu Hợp đồng 2026..." 
+            class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 outline-none transition-all">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1.5">Màu sắc đánh dấu</label>
+          <div class="flex items-center gap-2" id="folderColorPicker">
+            <button data-color="amber" class="color-btn w-7 h-7 rounded-full bg-amber-500 ring-2 ring-offset-2 ring-amber-500 transition-all"></button>
+            <button data-color="blue" class="color-btn w-7 h-7 rounded-full bg-blue-500 ring-offset-2 hover:ring-2 hover:ring-blue-400 transition-all"></button>
+            <button data-color="emerald" class="color-btn w-7 h-7 rounded-full bg-emerald-500 ring-offset-2 hover:ring-2 hover:ring-emerald-400 transition-all"></button>
+            <button data-color="purple" class="color-btn w-7 h-7 rounded-full bg-purple-500 ring-offset-2 hover:ring-2 hover:ring-purple-400 transition-all"></button>
+            <button data-color="rose" class="color-btn w-7 h-7 rounded-full bg-rose-500 ring-offset-2 hover:ring-2 hover:ring-rose-400 transition-all"></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex items-center justify-end gap-2">
+        <button id="cancelNewFolderBtn" class="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">Huỷ</button>
+        <button id="submitNewFolderBtn" class="px-5 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-md shadow-indigo-100 transition-all">Tạo thư mục</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: RENAME ITEM -->
+  <div id="renameModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-5 border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 class="text-base font-bold text-slate-900" id="renameModalTitle">Đổi tên mục</h3>
+        <button id="closeRenameModalBtn" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="mt-4">
+        <label class="block text-xs font-semibold text-slate-700 mb-1">Tên mới</label>
+        <input type="text" id="renameInput" 
+          class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 outline-none transition-all">
+      </div>
+
+      <div class="mt-6 flex items-center justify-end gap-2">
+        <button id="cancelRenameBtn" class="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">Huỷ</button>
+        <button id="submitRenameBtn" class="px-5 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-md shadow-indigo-100 transition-all">Lưu tên mới</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CONFIRM ACTION (NO alert/confirm) -->
+  <div id="confirmModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-5 border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-start gap-3">
+        <div id="confirmIconContainer" class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex-shrink-0 flex items-center justify-center">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-slate-900" id="confirmTitle">Xác nhận thao tác</h3>
+          <p class="text-xs text-slate-500 mt-1" id="confirmMessage">Bạn có chắc chắn muốn thực hiện thao tác này không?</p>
+        </div>
+      </div>
+
+      <div class="mt-6 flex items-center justify-end gap-2">
+        <button id="confirmCancelBtn" class="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">Huỷ bỏ</button>
+        <button id="confirmProceedBtn" class="px-5 py-2 text-sm font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-md shadow-rose-100 transition-all">Đồng ý</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: MOVE TO FOLDER -->
+  <div id="moveModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-5 border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 class="text-base font-bold text-slate-900">Di chuyển tới thư mục</h3>
+        <button id="closeMoveModalBtn" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="mt-3">
+        <p class="text-xs text-slate-500 mb-2">Chọn thư mục đích muốn chuyển mục <span id="moveItemName" class="font-bold text-slate-800"></span> tới:</p>
+        <div id="moveFolderList" class="max-h-60 overflow-y-auto space-y-1 p-1 border border-slate-200 rounded-xl bg-slate-50">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <div class="mt-5 flex items-center justify-end gap-2">
+        <button id="cancelMoveBtn" class="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">Huỷ</button>
+        <button id="submitMoveBtn" class="px-5 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-md shadow-indigo-100 transition-all">Chuyển đến đây</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: SHARE OVER ZALO, GMAIL, GOOGLE DRIVE, AND OTHER APPS -->
+  <div id="shareModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- Share Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Chia sẻ tài liệu đa kênh</h3>
+            <p class="text-xs text-slate-500 truncate max-w-xs" id="shareFileName">Tài liệu.docx</p>
+          </div>
+        </div>
+        <button id="closeShareModalBtn" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Channel Tabs: Zalo, Gmail, Drive, Other Apps -->
+      <div class="flex border-b border-slate-200 mt-4 -mx-6 px-6 gap-2">
+        <button data-tab="zalo" class="share-tab py-2.5 px-3 text-xs font-bold border-b-2 border-blue-600 text-blue-600 flex items-center gap-1.5 transition-all">
+          <span class="w-4 h-4 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-black">Z</span>
+          <span>Zalo</span>
+        </button>
+        <button data-tab="gmail" class="share-tab py-2.5 px-3 text-xs font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5 transition-all">
+          <svg class="w-3.5 h-3.5 text-rose-500" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          <span>Gmail</span>
+        </button>
+        <button data-tab="drive" class="share-tab py-2.5 px-3 text-xs font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5 transition-all">
+          <svg class="w-3.5 h-3.5 text-emerald-600" fill="currentColor" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+          <span>Google Drive</span>
+        </button>
+        <button data-tab="other" class="share-tab py-2.5 px-3 text-xs font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5 transition-all">
+          <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+          <span>App khác</span>
+        </button>
+      </div>
+
+      <!-- TAB CONTENT: ZALO -->
+      <div id="tabContentZalo" class="tab-pane py-4 space-y-4">
+        <div class="bg-blue-50/70 p-3.5 rounded-xl border border-blue-100 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex-shrink-0 flex items-center justify-center font-bold text-lg">Z</div>
+          <div>
+            <h4 class="text-xs font-bold text-blue-900">Chia sẻ trực tiếp qua Zalo Chat</h4>
+            <p class="text-[11px] text-blue-700 mt-0.5">Gửi link xem hoặc sao chép tin nhắn định dạng chuẩn để gửi vào nhóm Zalo hoặc chat cá nhân.</p>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Xem trước nội dung gửi Zalo:</label>
+          <div id="zaloPreviewBox" class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 whitespace-pre-wrap font-mono select-text">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <button id="copyZaloMessageBtn" class="flex items-center justify-center gap-2 py-2.5 px-3 bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold rounded-xl text-xs border border-blue-200 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            <span>Sao chép tin Zalo</span>
+          </button>
+          <button id="openZaloWebBtn" class="flex items-center justify-center gap-2 py-2.5 px-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-xs shadow-md shadow-blue-200 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            <span>Mở Zalo chia sẻ</span>
+          </button>
+        </div>
+
+        <!-- QR Code for mobile Zalo scanning -->
+        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200">
+          <div class="flex items-center gap-2.5">
+            <div id="zaloQrCode" class="w-12 h-12 bg-white p-1 rounded-lg border border-slate-200 flex items-center justify-center">
+              <!-- SVG QR dummy -->
+              <svg class="w-full h-full text-slate-800" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14 0h4v4h-4v-4zm-4 4h4v4h-4v-4zm4-4h4v4h-4v-4z"/>
+              </svg>
+            </div>
+            <div>
+              <span class="text-xs font-bold text-slate-800 block">Quét mã QR bằng Zalo</span>
+              <span class="text-[11px] text-slate-400">Mở app Zalo quét mã để mở tài liệu ngay trên điện thoại</span>
+            </div>
+          </div>
+          <button id="downloadZaloQrBtn" class="text-xs text-indigo-600 font-semibold hover:underline">Lưu mã QR</button>
+        </div>
+      </div>
+
+      <!-- TAB CONTENT: GMAIL -->
+      <div id="tabContentGmail" class="tab-pane py-4 space-y-4 hidden">
+        <div class="bg-rose-50/70 p-3.5 rounded-xl border border-rose-100 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-rose-600 text-white flex-shrink-0 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-rose-900">Gửi tài liệu đính kèm qua Gmail</h4>
+            <p class="text-[11px] text-rose-700 mt-0.5">Tạo thư mới trên Gmail với tiêu đề và tóm tắt nội dung file được điền sẵn.</p>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Email người nhận (tuỳ chọn)</label>
+          <input type="email" id="gmailRecipientInput" placeholder="dongnghiep@gmail.com, sep@congty.com" 
+            class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-rose-500 focus:ring-4 focus:ring-rose-100 outline-none transition-all">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Xem trước nội dung Email:</label>
+          <div id="gmailPreviewBox" class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 whitespace-pre-wrap font-mono select-text max-h-36 overflow-y-auto">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <button id="copyEmailContentBtn" class="flex items-center justify-center gap-2 py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+            <span>Sao chép nội dung</span>
+          </button>
+          <button id="openGmailComposeBtn" class="flex items-center justify-center gap-2 py-2.5 px-3 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-xl text-xs shadow-md shadow-rose-200 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            <span>Mở Gmail soạn thư</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB CONTENT: GOOGLE DRIVE -->
+      <div id="tabContentDrive" class="tab-pane py-4 space-y-4 hidden">
+        <div class="bg-emerald-50/70 p-3.5 rounded-xl border border-emerald-100 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex-shrink-0 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-emerald-900">Đồng bộ & Lưu trữ vào Google Drive</h4>
+            <p class="text-[11px] text-emerald-700 mt-0.5">Tải tệp trực tiếp lên Google Drive cá nhân để cộng tác trực tuyến với Google Docs / Sheets / Slides.</p>
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-slate-600">Trạng thái đồng bộ:</span>
+            <span id="driveSyncStatus" class="font-bold text-emerald-600 flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Sẵn sàng đồng bộ
+            </span>
+          </div>
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-slate-600">Định dạng đích trên Drive:</span>
+            <span id="driveTargetFormat" class="font-mono text-slate-800 bg-white px-2 py-0.5 rounded border border-slate-200">Google Docs (.gdoc)</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <button id="syncDriveBtn" class="flex items-center justify-center gap-2 py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-xs shadow-md shadow-emerald-200 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            <span>Tải lên Google Drive</span>
+          </button>
+          <button id="openGoogleDriveBtn" class="flex items-center justify-center gap-2 py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            <span>Mở trang Google Drive</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB CONTENT: OTHER APPS (Web Share API, Link, QR) -->
+      <div id="tabContentOther" class="tab-pane py-4 space-y-4 hidden">
+        <div class="bg-indigo-50/70 p-3.5 rounded-xl border border-indigo-100 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex-shrink-0 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-indigo-900">Chia sẻ qua ứng dụng hệ thống & Liên kết</h4>
+            <p class="text-[11px] text-indigo-700 mt-0.5">Chia sẻ qua Facebook, Telegram, WhatsApp, AirDrop, SMS hoặc sao chép link.</p>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Liên kết truy cập tài liệu:</label>
+          <div class="flex items-center gap-2">
+            <input type="text" id="shareLinkInput" readonly 
+              class="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 outline-none select-all font-mono">
+            <button id="copyShareLinkBtn" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl shadow-sm transition-colors flex-shrink-0">
+              Sao chép
+            </button>
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+          <label class="block text-xs font-semibold text-slate-700">Quyền truy cập liên kết:</label>
+          <div class="flex items-center gap-4 text-xs">
+            <label class="flex items-center gap-1.5 cursor-pointer">
+              <input type="radio" name="sharePerm" value="view" checked class="text-indigo-600 focus:ring-indigo-500">
+              <span>Chỉ xem tài liệu</span>
+            </label>
+            <label class="flex items-center gap-1.5 cursor-pointer">
+              <input type="radio" name="sharePerm" value="edit" class="text-indigo-600 focus:ring-indigo-500">
+              <span>Cho phép chỉnh sửa</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- System Web Share API Button -->
+        <button id="nativeShareBtn" class="w-full flex items-center justify-center gap-2 py-2.5 px-3 bg-slate-800 hover:bg-slate-900 text-white font-semibold rounded-xl text-xs shadow-md transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+          <span>Mở hộp thoại chia sẻ ứng dụng hệ thống</span>
+        </button>
+      </div>
+
+      <!-- Share Footer -->
+      <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+        <span class="text-[11px] text-slate-400">Bảo mật mã hoá hai chiều SSL</span>
+        <button id="finishShareBtn" class="px-4 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== DOCUMENT EDITORS ==================== -->
+
+  <!-- EDITOR 1: WORD (.docx) -->
+  <div id="wordEditorModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex flex-col">
+    <!-- Top toolbar -->
+    <div class="bg-blue-700 text-white px-4 py-2 flex items-center justify-between flex-shrink-0 shadow-md">
+      <div class="flex items-center gap-3">
+        <span class="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center font-bold text-sm">W</span>
+        <div>
+          <input type="text" id="wordTitleInput" class="bg-transparent text-white font-bold text-sm border-b border-transparent hover:border-white/40 focus:border-white focus:outline-none px-1 py-0.5 rounded" value="Tài liệu văn bản.docx">
+          <span class="text-[10px] text-blue-200 block">Trình soạn thảo Văn bản Word Pro</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span id="wordSaveStatus" class="text-xs text-blue-200">Đã lưu</span>
+        <button id="wordSaveBtn" class="px-3 py-1.5 bg-white/20 hover:bg-white/30 text-white rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+          <span>Lưu</span>
+        </button>
+        <button id="wordDownloadBtn" class="px-3 py-1.5 bg-white text-blue-700 hover:bg-blue-50 rounded-lg text-xs font-semibold shadow-sm transition-colors flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          <span>Tải .docx</span>
+        </button>
+        <button id="closeWordEditorBtn" class="p-1.5 text-blue-200 hover:text-white rounded-lg transition-colors ml-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Formatting Ribbon -->
+    <div class="bg-slate-100 border-b border-slate-200 px-4 py-2 flex flex-wrap items-center gap-1 flex-shrink-0 text-slate-700 text-xs">
+      <button data-cmd="bold" class="format-btn p-1.5 hover:bg-white hover:shadow-sm rounded font-bold" title="In đậm (Ctrl+B)">B</button>
+      <button data-cmd="italic" class="format-btn p-1.5 hover:bg-white hover:shadow-sm rounded italic font-serif" title="In nghiêng (Ctrl+I)">I</button>
+      <button data-cmd="underline" class="format-btn p-1.5 hover:bg-white hover:shadow-sm rounded underline" title="Gạch chân (Ctrl+U)">U</button>
+      <button data-cmd="strikeThrough" class="format-btn p-1.5 hover:bg-white hover:shadow-sm rounded line-through" title="Gạch ngang">S</button>
+      <div class="w-px h-5 bg-slate-300 mx-1"></div>
+      
+      <button data-format="h1" class="format-block-btn px-2 py-1 hover:bg-white hover:shadow-sm rounded font-bold" title="Tiêu đề 1">H1</button>
+      <button data-format="h2" class="format-block-btn px-2 py-1 hover:bg-white hover:shadow-sm rounded font-bold" title="Tiêu đề 2">H2</button>
+      <button data-format="h3" class="format-block-btn px-2 py-1 hover:bg-white hover:shadow-sm rounded font-bold" title="Tiêu đề 3">H3</button>
+      <button data-format="p" class="format-block-btn px-2 py-1 hover:bg-white hover:shadow-sm rounded font-medium" title="Đoạn văn">P</button>
+      <div class="w-px h-5 bg-slate-300 mx-1"></div>
+
+      <button data-cmd="insertUnorderedList" class="format-btn p-1.5 hover:bg-white hover:shadow-sm rounded" title="Danh sách dấu đầu dòng">• Danh sách</button>
+      <button data-cmd="insertOrderedList" class="format-btn p-1.5 hover:bg-white hover:shadow-sm rounded" title="Danh sách số">1. Số thứ tự</button>
+      <div class="w-px h-5 bg-slate-300 mx-1"></div>
+
+      <button data-cmd="justifyLeft" class="format-btn p-1.5 hover:bg-white hover:shadow-sm rounded" title="Căn trái">Trái</button>
+      <button data-cmd="justifyCenter" class="format-btn p-1.5 hover:bg-white hover:shadow-sm rounded" title="Căn giữa">Giữa</button>
+      <button data-cmd="justifyRight" class="format-btn p-1.5 hover:bg-white hover:shadow-sm rounded" title="Căn phải">Phải</button>
+      <button data-cmd="justifyFull" class="format-btn p-1.5 hover:bg-white hover:shadow-sm rounded" title="Căn đều">Đều</button>
+      <div class="w-px h-5 bg-slate-300 mx-1"></div>
+
+      <button id="wordInsertTableBtn" class="px-2 py-1 hover:bg-white hover:shadow-sm rounded flex items-center gap-1">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 4h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <span>Chèn bảng</span>
+      </button>
+
+      <div class="ml-auto flex items-center gap-3 text-slate-500 text-[11px]">
+        <span>Số từ: <strong id="wordWordCount" class="text-slate-800">0</strong></span>
+        <span>Ký tự: <strong id="wordCharCount" class="text-slate-800">0</strong></span>
+      </div>
+    </div>
+
+    <!-- Word Document Canvas Page -->
+    <div class="flex-1 overflow-y-auto bg-slate-200/80 p-4 sm:p-8 flex justify-center">
+      <div class="w-full max-w-3xl min-h-[842px] bg-white shadow-xl rounded-sm p-10 sm:p-14 text-slate-800 focus:outline-none" 
+           id="wordEditorContent" 
+           contenteditable="true" 
+           data-placeholder="Nhập nội dung văn bản Word tại đây...">
+      </div>
+    </div>
+  </div>
+
+  <!-- EDITOR 2: EXCEL (.xlsx) -->
+  <div id="excelEditorModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex flex-col">
+    <!-- Top bar -->
+    <div class="bg-emerald-700 text-white px-4 py-2 flex items-center justify-between flex-shrink-0 shadow-md">
+      <div class="flex items-center gap-3">
+        <span class="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center font-bold text-sm">X</span>
+        <div>
+          <input type="text" id="excelTitleInput" class="bg-transparent text-white font-bold text-sm border-b border-transparent hover:border-white/40 focus:border-white focus:outline-none px-1 py-0.5 rounded" value="Bảng tính kế hoạch.xlsx">
+          <span class="text-[10px] text-emerald-200 block">Bảng tính Excel Sheet Pro & Công thức tính toán</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span id="excelSaveStatus" class="text-xs text-emerald-200">Đã lưu</span>
+        <button id="excelSaveBtn" class="px-3 py-1.5 bg-white/20 hover:bg-white/30 text-white rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+          <span>Lưu</span>
+        </button>
+        <button id="excelExportCsvBtn" class="px-3 py-1.5 bg-white text-emerald-700 hover:bg-emerald-50 rounded-lg text-xs font-semibold shadow-sm transition-colors flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          <span>Xuất CSV / Excel</span>
+        </button>
+        <button id="closeExcelEditorBtn" class="p-1.5 text-emerald-200 hover:text-white rounded-lg transition-colors ml-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Toolbar & Formula Bar -->
+    <div class="bg-slate-100 border-b border-slate-200 px-4 py-2 flex flex-wrap items-center gap-2 flex-shrink-0 text-xs">
+      <button id="excelAddRowBtn" class="px-2.5 py-1.5 bg-white hover:bg-slate-50 border border-slate-300 rounded font-medium flex items-center gap-1">
+        <span>+ Thêm hàng</span>
+      </button>
+      <button id="excelAddColBtn" class="px-2.5 py-1.5 bg-white hover:bg-slate-50 border border-slate-300 rounded font-medium flex items-center gap-1">
+        <span>+ Thêm cột</span>
+      </button>
+      <button id="excelAutoSumBtn" class="px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded font-semibold flex items-center gap-1">
+        <span>∑ Tự động tính tổng (SUM)</span>
+      </button>
+      <button id="excelAutoAvgBtn" class="px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded font-semibold flex items-center gap-1">
+        <span>Trung bình (AVERAGE)</span>
+      </button>
+
+      <!-- Formula input bar -->
+      <div class="flex-1 flex items-center gap-2 min-w-[200px] ml-2">
+        <span class="font-mono font-bold text-slate-500 bg-white px-2 py-1 border border-slate-300 rounded" id="excelActiveCellLabel">A1</span>
+        <div class="flex-1 relative flex items-center">
+          <span class="absolute left-2.5 text-slate-400 font-serif italic font-bold">fx</span>
+          <input type="text" id="excelFormulaInput" placeholder="Nhập giá trị hoặc công thức (ví dụ: =SUM(B2:B5) hoặc =B2*1.1)" 
+            class="w-full pl-8 pr-3 py-1 bg-white border border-slate-300 rounded font-mono text-xs focus:outline-none focus:border-emerald-500">
+        </div>
+      </div>
+    </div>
+
+    <!-- Excel Spreadsheet Table Grid -->
+    <div class="flex-1 overflow-auto bg-slate-200 p-4" id="excelTableContainer">
+      <div class="bg-white shadow-lg inline-block min-w-full rounded border border-slate-300">
+        <table id="excelTable" class="border-collapse text-xs w-full">
+          <!-- Populated dynamically with cells -->
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDITOR 3: POWERPOINT (.pptx) -->
+  <div id="pptEditorModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex flex-col">
+    <!-- Top bar -->
+    <div class="bg-orange-600 text-white px-4 py-2 flex items-center justify-between flex-shrink-0 shadow-md">
+      <div class="flex items-center gap-3">
+        <span class="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center font-bold text-sm">P</span>
+        <div>
+          <input type="text" id="pptTitleInput" class="bg-transparent text-white font-bold text-sm border-b border-transparent hover:border-white/40 focus:border-white focus:outline-none px-1 py-0.5 rounded" value="Bài thuyết trình Pitch Deck.pptx">
+          <span class="text-[10px] text-orange-200 block">PowerPoint Slide Designer Pro</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span id="pptSaveStatus" class="text-xs text-orange-200">Đã lưu</span>
+        <button id="pptDownloadBtn" class="px-3 py-1.5 bg-white text-orange-600 hover:bg-orange-50 rounded-lg text-xs font-semibold shadow-sm transition-colors flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          <span>Tải Slide</span>
+        </button>
+        <button id="pptPlaySlideshowBtn" class="px-3.5 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-xs font-bold transition-all shadow-md flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+          <span>Trình chiếu Fullscreen</span>
+        </button>
+        <button id="pptSaveBtn" class="px-3 py-1.5 bg-white/20 hover:bg-white/30 text-white rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+          <span>Lưu</span>
+        </button>
+        <button id="closePptEditorBtn" class="p-1.5 text-orange-200 hover:text-white rounded-lg transition-colors ml-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- PPT Workbench -->
+    <div class="flex-1 flex overflow-hidden">
+      <!-- Slide Thumbnails list (Left) -->
+      <div class="w-56 bg-slate-100 border-r border-slate-200 flex flex-col flex-shrink-0">
+        <div class="p-3 border-b border-slate-200 flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-600 uppercase tracking-wider">Danh sách Slide</span>
+          <button id="pptAddSlideBtn" class="p-1.5 bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-lg text-xs font-semibold" title="Thêm slide mới">
+            + Slide
+          </button>
+        </div>
+        <div id="pptSlideThumbnails" class="flex-1 overflow-y-auto p-3 space-y-3">
+          <!-- Slide thumbnails rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Slide Main Editor (Right) -->
+      <div class="flex-1 overflow-y-auto bg-slate-200/80 p-6 flex flex-col items-center justify-center">
+        <!-- Slide Stage 16:9 container -->
+        <div id="pptSlideCanvas" class="w-full max-w-4xl aspect-[16/9] bg-white rounded-xl shadow-2xl p-10 flex flex-col justify-between relative transition-all border border-slate-200">
+          <div>
+            <!-- Slide Category / Tag -->
+            <input type="text" id="pptSlideTagInput" class="text-xs uppercase font-bold tracking-widest text-orange-600 bg-transparent border-b border-transparent hover:border-orange-200 focus:border-orange-500 outline-none mb-2" value="GIỚI THIỆU CHIẾN LƯỢC">
+            <!-- Slide Title -->
+            <input type="text" id="pptSlideTitleInput" class="w-full text-2xl sm:text-3xl font-extrabold text-slate-900 bg-transparent border-b border-transparent hover:border-slate-300 focus:border-orange-500 outline-none py-1" value="Kế hoạch Tăng trưởng Doanh thu 2026">
+            <!-- Slide Subtitle -->
+            <input type="text" id="pptSlideSubtitleInput" class="w-full text-sm sm:text-base text-slate-500 bg-transparent border-b border-transparent hover:border-slate-300 focus:border-orange-500 outline-none py-1 mt-1" value="Đột phá thị trường với hệ sinh thái công nghệ mới">
+          </div>
+
+          <!-- Slide Content / Bullets -->
+          <div class="flex-1 my-6 overflow-y-auto">
+            <div id="pptBulletsList" class="space-y-3">
+              <!-- Bullets rendered dynamically -->
+            </div>
+            <button id="pptAddBulletBtn" class="mt-3 text-xs text-orange-600 font-semibold hover:underline flex items-center gap-1">
+              + Thêm ý trình bày
+            </button>
+          </div>
+
+          <!-- Slide Footer -->
+          <div class="flex items-center justify-between text-xs text-slate-400 border-t border-slate-100 pt-3">
+            <span>DocuSpace Pro Presentation</span>
+            <span id="pptSlideNumberLabel">Slide 1 / 3</span>
+          </div>
+        </div>
+
+        <!-- Slide Controls bar below canvas -->
+        <div class="mt-4 flex items-center gap-3">
+          <div class="flex items-center gap-1 bg-white px-3 py-1.5 rounded-xl shadow-sm border border-slate-200 text-xs">
+            <span class="text-slate-500 font-medium">Chủ đề slide:</span>
+            <select id="pptThemeSelect" class="bg-transparent font-semibold text-slate-700 outline-none">
+              <option value="modern-light">Hiện đại Tinh tế (Trắng)</option>
+              <option value="ocean-blue">Xanh Đại dương (Ocean)</option>
+              <option value="dark-slate">Tối Đẳng cấp (Dark Slate)</option>
+              <option value="warm-orange">Cam Năng động (Orange)</option>
+            </select>
+          </div>
+          <button id="pptDuplicateSlideBtn" class="px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs font-medium shadow-sm transition-colors">
+            Nhân bản Slide
+          </button>
+          <button id="pptDeleteSlideBtn" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-medium transition-colors">
+            Xoá Slide này
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULLSCREEN SLIDESHOW MODE -->
+  <div id="slideshowModal" class="fixed inset-0 bg-slate-950 z-[100] hidden flex flex-col items-center justify-center p-6 text-white select-none">
+    <div id="slideshowContent" class="w-full max-w-5xl aspect-[16/9] bg-slate-900 rounded-2xl shadow-2xl p-12 sm:p-16 flex flex-col justify-between border border-slate-800">
+      <!-- Injected during presentation -->
+    </div>
+
+    <!-- Floating Navigation Bar -->
+    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900/80 backdrop-blur-md px-4 py-2 rounded-full border border-slate-700 flex items-center gap-4 text-xs">
+      <button id="slideshowPrevBtn" class="p-1.5 hover:bg-slate-800 rounded-full">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+      <span id="slideshowCounter" class="font-bold text-slate-300">1 / 3</span>
+      <button id="slideshowNextBtn" class="p-1.5 hover:bg-slate-800 rounded-full">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </button>
+      <div class="w-px h-4 bg-slate-700"></div>
+      <button id="closeSlideshowBtn" class="text-rose-400 hover:text-rose-300 font-semibold">
+        Thoát (Esc)
+      </button>
+    </div>
+  </div>
+
+  <!-- EDITOR 4: NOTE CHUYÊN NGHIỆP (.note) -->
+  <div id="noteEditorModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex flex-col">
+    <!-- Top bar -->
+    <div class="bg-amber-600 text-white px-4 py-2 flex items-center justify-between flex-shrink-0 shadow-md">
+      <div class="flex items-center gap-3">
+        <span class="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center font-bold text-sm">N</span>
+        <div>
+          <input type="text" id="noteTitleInput" class="bg-transparent text-white font-bold text-sm border-b border-transparent hover:border-white/40 focus:border-white focus:outline-none px-1 py-0.5 rounded" value="Ghi chú công việc.note">
+          <span class="text-[10px] text-amber-200 block">Ghi chú Note chuyên nghiệp & To-Do List</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span id="noteSaveStatus" class="text-xs text-amber-200">Đã lưu</span>
+        <button id="noteDownloadBtn" class="px-3 py-1.5 bg-white text-amber-700 hover:bg-amber-50 rounded-lg text-xs font-semibold shadow-sm transition-colors flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          <span>Tải Note</span>
+        </button>
+        <button id="noteSaveBtn" class="px-3 py-1.5 bg-white/20 hover:bg-white/30 text-white rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+          <span>Lưu</span>
+        </button>
+        <button id="closeNoteEditorBtn" class="p-1.5 text-amber-200 hover:text-white rounded-lg transition-colors ml-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Note Workspace -->
+    <div class="flex-1 overflow-y-auto bg-slate-100 p-4 sm:p-8 flex justify-center">
+      <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8 flex flex-col space-y-6">
+        <!-- Note Tags & Category -->
+        <div class="flex items-center gap-2 flex-wrap" id="noteTagsContainer">
+          <span class="px-2.5 py-1 bg-amber-100 text-amber-700 text-xs font-semibold rounded-full flex items-center gap-1">
+            #KeHoach
+          </span>
+          <span class="px-2.5 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full flex items-center gap-1">
+            #UuTienCao
+          </span>
+        </div>
+
+        <!-- Note Text body -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Nội dung ghi chú</label>
+          <textarea id="noteBodyInput" rows="6" placeholder="Ghi lại ý tưởng, nội dung cuộc họp, chiến lược..." 
+            class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm leading-relaxed focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-100 outline-none transition-all"></textarea>
+        </div>
+
+        <!-- Interactive Checklist / To-do items -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Danh sách việc cần làm (To-Do Checklist)</label>
+            <button id="noteAddChecklistBtn" class="text-xs text-amber-600 font-bold hover:underline flex items-center gap-1">
+              + Thêm mục việc
+            </button>
+          </div>
+          <div id="noteChecklistContainer" class="space-y-2">
+            <!-- Checklist items rendered dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: UPLOAD FILE -->
+  <div id="uploadModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 class="text-base font-bold text-slate-900">Tải tệp lên hệ thống</h3>
+        <button id="closeUploadModalBtn" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="mt-4">
+        <div id="dropZone" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 rounded-2xl p-8 text-center cursor-pointer transition-all bg-slate-50 hover:bg-indigo-50/50">
+          <input type="file" id="filePickerInput" class="hidden" multiple>
+          <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto mb-3">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+          </div>
+          <p class="text-sm font-semibold text-slate-700">Kéo và thả tệp vào đây, hoặc <span class="text-indigo-600">chọn từ máy tính</span></p>
+          <p class="text-xs text-slate-400 mt-1">Hỗ trợ Word (.docx), Excel (.xlsx), PowerPoint (.pptx), PDF, Hình ảnh, Text</p>
+        </div>
+      </div>
+
+      <div class="mt-4 flex items-center justify-between text-xs text-slate-500">
+        <span>Vào thư mục hiện tại: <strong id="uploadTargetFolderText" class="text-slate-700 font-semibold">Trang chủ</strong></span>
+        <button id="cancelUploadBtn" class="text-slate-500 hover:text-slate-800 font-medium">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- MODAL: DOWNLOAD & EXPORT ASSISTANT (Overcomes iframe sandbox download blocks) -->
+  <div id="downloadFallbackModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Tải xuống & Xuất tệp tin</h3>
+            <p class="text-xs text-slate-500 truncate max-w-xs" id="downloadModalFileName">Tệp tin</p>
+          </div>
+        </div>
+        <button id="closeDownloadModalBtn" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-3">
+        <div class="p-3 bg-amber-50 border border-amber-200/80 rounded-xl text-xs text-amber-800 flex items-start gap-2">
+          <svg class="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <div>
+            <span class="font-bold block">Đã phát lệnh tải xuống về máy!</span>
+            <span>Nếu trình duyệt chặn tự động tải (do cơ chế bảo mật sandbox iframe), hãy chọn một trong các cách dự phòng thuận tiện dưới đây:</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+          <!-- Option 1: Direct Download Retry -->
+          <button id="dlRetryDirectBtn" class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/50 text-left transition-all">
+            <span class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center flex-shrink-0 font-bold">1</span>
+            <div>
+              <span class="font-bold text-xs text-slate-800 block">Thử tải lại trực tiếp</span>
+              <span class="text-[11px] text-slate-400">Tải qua chuẩn Data URI</span>
+            </div>
+          </button>
+
+          <!-- Option 2: Open in New Tab -->
+          <button id="dlOpenNewTabBtn" class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/50 text-left transition-all">
+            <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0 font-bold">2</span>
+            <div>
+              <span class="font-bold text-xs text-slate-800 block">Mở trong Tab mới</span>
+              <span class="text-[11px] text-slate-400">Không bị giới hạn sandbox</span>
+            </div>
+          </button>
+
+          <!-- Option 3: Copy Content -->
+          <button id="dlCopyContentBtn" class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/50 text-left transition-all">
+            <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center flex-shrink-0 font-bold">3</span>
+            <div>
+              <span class="font-bold text-xs text-slate-800 block">Sao chép nội dung</span>
+              <span class="text-[11px] text-slate-400">Dán trực tiếp vào Office</span>
+            </div>
+          </button>
+
+          <!-- Option 4: Print / Save PDF -->
+          <button id="dlPrintPdfBtn" class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/50 text-left transition-all">
+            <span class="w-8 h-8 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center flex-shrink-0 font-bold">4</span>
+            <div>
+              <span class="font-bold text-xs text-slate-800 block">In / Lưu dạng PDF</span>
+              <span class="text-[11px] text-slate-400">Xuất qua hộp thoại máy in</span>
+            </div>
+          </button>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Xem trước nội dung xuất:</label>
+          <div id="dlContentPreview" class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 max-h-32 overflow-y-auto font-mono whitespace-pre-wrap select-all">
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5 flex items-center justify-end">
+        <button id="finishDownloadModalBtn" class="px-5 py-2 text-xs font-semibold text-white bg-slate-800 hover:bg-slate-900 rounded-xl transition-colors">Đóng hộp thoại</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-[999] flex flex-col gap-2 pointer-events-none max-w-sm"></div>
+
+  <!-- ==================== CORE JAVASCRIPT APPLICATION ==================== -->
+  <script>
+    (function() {
+      // --- INITIAL SAMPLE DATA (Thực tế và phong phú) ---
+      const DEFAULT_ITEMS = [
+        // Folders
+        {
+          id: 'folder_1',
+          name: 'Dự án Công ty 2026',
+          type: 'folder',
+          parentId: 'root',
+          starred: true,
+          color: 'blue',
+          updatedAt: '04/11/2026 09:15',
+          size: '4 mục'
+        },
+        {
+          id: 'folder_2',
+          name: 'Tài chính & Hạch toán',
+          type: 'folder',
+          parentId: 'root',
+          starred: false,
+          color: 'emerald',
+          updatedAt: '03/11/2026 16:30',
+          size: '2 mục'
+        },
+        {
+          id: 'folder_3',
+          name: 'Học tập & Nghiên cứu AI',
+          type: 'folder',
+          parentId: 'root',
+          starred: true,
+          color: 'purple',
+          updatedAt: '02/11/2026 14:20',
+          size: '3 mục'
+        },
+        // Files in Root
+        {
+          id: 'doc_1',
+          name: 'Kế hoạch Phát triển Sản phẩm 2026.docx',
+          type: 'word',
+          parentId: 'root',
+          starred: true,
+          updatedAt: '04/11/2026 11:45',
+          size: '1.4 MB',
+          content: '<h1>KẾ HOẠCH CHIẾN LƯỢC SẢN PHẨM NĂM 2026</h1><p>DocuSpace Pro là nền tảng quản trị tài liệu và ghi chú thế hệ mới, tối ưu cho doanh nghiệp và cá nhân làm việc linh hoạt.</p><h3>1. Mục tiêu trọng tâm:</h3><ul><li>Mở rộng khả năng lưu trữ không giới hạn trên đám mây</li><li>Hỗ trợ xem và biên tập tức thời Word (.docx), Excel (.xlsx), PowerPoint (.pptx)</li><li>Tích hợp chia sẻ một chạm qua Zalo Chat, Gmail, Google Drive</li></ul><h3>2. Lộ trình triển khai:</h3><p>Quý 1: Hoàn thiện lõi quản trị tệp tin và cơ chế bảo mật phân quyền.<br>Quý 2: Tối ưu công cụ tính toán bảng tính Excel và chế độ thuyết trình PowerPoint.</p>'
+        },
+        {
+          id: 'doc_2',
+          name: 'Báo cáo Doanh thu & Chi phí Q3-2026.xlsx',
+          type: 'excel',
+          parentId: 'root',
+          starred: true,
+          updatedAt: '04/11/2026 08:30',
+          size: '850 KB',
+          content: {
+            headers: ['Hạng mục', 'Doanh thu (VNĐ)', 'Chi phí (VNĐ)', 'Lợi nhuận (VNĐ)', 'Tỷ suất (%)'],
+            rows: [
+              ['Tháng 7/2026', '450000000', '280000000', '170000000', '37.8'],
+              ['Tháng 8/2026', '520000000', '310000000', '210000000', '40.4'],
+              ['Tháng 9/2026', '610000000', '340000000', '270000000', '44.3'],
+              ['Tổng kết Q3', '1580000000', '930000000', '650000000', '41.1']
+            ]
+          }
+        },
+        {
+          id: 'doc_3',
+          name: 'Pitch Deck Gọi vốn Series A.pptx',
+          type: 'powerpoint',
+          parentId: 'root',
+          starred: false,
+          updatedAt: '03/11/2026 15:10',
+          size: '4.2 MB',
+          content: {
+            slides: [
+              {
+                tag: 'BÀI THUYẾT TRÌNH GỌI VỐN',
+                title: 'DocuSpace Pro - Đột phá Lưu trữ',
+                subtitle: 'Giải pháp Không gian số toàn diện cho doanh nghiệp Việt Nam',
+                bullets: [
+                  'Thị trường lưu trữ và làm việc số tăng trưởng 28% mỗi năm',
+                  'Khả năng tích hợp sâu sắc với ứng dụng Zalo, Gmail và Google Drive',
+                  'Đội ngũ sáng lập giàu kinh nghiệm với hơn 10 năm phát triển sản phẩm'
+                ],
+                theme: 'ocean-blue'
+              },
+              {
+                tag: 'MÔ HÌNH SẢN PHẨM',
+                title: 'Hệ Sinh Thái Làm Việc Đa Kênh',
+                subtitle: 'Kết nối hoàn hảo giữa máy tính, điện thoại và lưu trữ đám mây',
+                bullets: [
+                  'Tạo và chỉnh sửa trực tiếp Word, Excel, PowerPoint ngay trên trình duyệt',
+                  'Bảo mật phân quyền theo cấp độ thư mục và liên kết chia sẻ thông minh',
+                  'Hỗ trợ xuất tệp tương thích 100% với bộ ứng dụng Microsoft Office'
+                ],
+                theme: 'dark-slate'
+              },
+              {
+                tag: 'KẾ HOẠCH TÀI CHÍNH',
+                title: 'Mục Tiêu & Dự Phóng 2026 - 2028',
+                subtitle: 'Đạt 500.000 người dùng hoạt động hàng tháng trong 18 tháng',
+                bullets: [
+                  'Mục tiêu gọi vốn: 1.5 Triệu USD cho 15% cổ phần',
+                  'Dự phóng điểm hòa vốn sau 14 tháng triển khai thương mại',
+                  'Mở rộng thị trường Đông Nam Á vào quý 4 năm 2027'
+                ],
+                theme: 'modern-light'
+              }
+            ]
+          }
+        },
+        {
+          id: 'doc_4',
+          name: 'Biên bản Họp Chiến lược & Việc Cần Làm.note',
+          type: 'note',
+          parentId: 'root',
+          starred: true,
+          updatedAt: '04/11/2026 10:00',
+          size: '120 KB',
+          content: {
+            body: 'Cuộc họp chiến lược thảo luận về việc tích hợp tính năng gửi tài liệu qua Zalo Chat và Gmail. Toàn bộ ban giám đốc đã thống nhất kế hoạch phát hành phiên bản thử nghiệm.',
+            tags: ['ChienLuoc', 'HopBanGiamDoc', 'UuTien'],
+            tasks: [
+              { id: 't1', text: 'Kiểm tra tính năng tạo folder và đổi tên tệp', done: true },
+              { id: 't2', text: 'Thử nghiệm chức năng copy và nhân bản dữ liệu', done: true },
+              { id: 't3', text: 'Tối ưu liên kết chia sẻ qua Zalo và Gmail', done: false },
+              { id: 't4', text: 'Chuẩn bị dữ liệu mẫu báo cáo tài chính Excel', done: true }
+            ]
+          }
+        },
+        // Files in folder_1
+        {
+          id: 'doc_5',
+          name: 'Hợp đồng Cung cấp Dịch vụ Phần mềm.docx',
+          type: 'word',
+          parentId: 'folder_1',
+          starred: false,
+          updatedAt: '01/11/2026 14:00',
+          size: '980 KB',
+          content: '<h1>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</h1><p><strong>Độc lập - Tự do - Hạnh phúc</strong></p><hr><br><h2>HỢP ĐỒNG KINH TẾ DỊCH VỤ SỐ</h2><p>Hôm nay, ngày 04 tháng 11 năm 2026, chúng tôi gồm có:</p><p><strong>Bên A (Bên Sử Dụng):</strong> Công ty Cổ phần Công nghệ ABC<br><strong>Bên B (Bên Cung Cấp):</strong> Hệ thống Lưu trữ DocuSpace Pro</p><p>Hai bên thống nhất ký kết hợp đồng cung cấp tài khoản lưu trữ không giới hạn thời gian.</p>'
+        },
+        // Deleted item in Trash
+        {
+          id: 'doc_trash_1',
+          name: 'Bản nháp Ý tưởng cũ.note',
+          type: 'note',
+          parentId: 'root',
+          starred: false,
+          deleted: true,
+          updatedAt: '28/10/2026 09:00',
+          size: '45 KB',
+          content: {
+            body: 'Bản nháp ý tưởng trước khi chuyển sang kế hoạch chính thức.',
+            tags: ['Nhap'],
+            tasks: []
+          }
+        }
+      ];
+
+      // --- APPLICATION STATE ---
+      let state = {
+        items: [],
+        currentFolderId: 'root',
+        currentNav: 'all', // 'all' | 'starred' | 'recent' | 'trash' | 'type_word' | etc.
+        viewMode: 'grid',  // 'grid' | 'list'
+        searchQuery: '',
+        sortBy: 'updated', // 'updated' | 'name_asc' | 'name_desc' | 'size'
+        activeEditingId: null, // item id currently open in Word/Excel/PPT/Note
+        activeMovingId: null,
+        activeRenamingId: null,
+        activeShareId: null,
+        activeSlideIndex: 0,
+        selectedFolderColor: 'amber'
+      };
+
+      // --- LOCALSTORAGE PERSISTENCE (Safe try/catch) ---
+      function loadState() {
+        try {
+          const saved = localStorage.getItem('docuspace_items_v2');
+          if (saved) {
+            state.items = JSON.parse(saved);
+          } else {
+            state.items = JSON.parse(JSON.stringify(DEFAULT_ITEMS));
+            saveState();
+          }
+        } catch (e) {
+          state.items = JSON.parse(JSON.stringify(DEFAULT_ITEMS));
+        }
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem('docuspace_items_v2', JSON.stringify(state.items));
+        } catch (e) {
+          console.warn('Storage failed:', e);
+        }
+        updateStorageMeter();
+        updateNavBadges();
+      }
+
+      // --- TOAST NOTIFICATIONS (No alert/confirm) ---
+      function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = `p-3.5 rounded-xl text-xs font-semibold shadow-xl border flex items-center gap-2.5 transition-all duration-200 pointer-events-auto transform translate-y-2 opacity-0 ${
+          type === 'error' ? 'bg-rose-600 text-white border-rose-700' :
+          type === 'warning' ? 'bg-amber-500 text-white border-amber-600' :
+          'bg-slate-900 text-white border-slate-800'
+        }`;
+
+        let iconSvg = '<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
+        if (type === 'error') {
+          iconSvg = '<svg class="w-4 h-4 text-rose-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>';
+        }
+
+        toast.innerHTML = `${iconSvg}<span>${escapeHtml(message)}</span>`;
+        container.appendChild(toast);
+
+        // Animate in
+        requestAnimationFrame(() => {
+          toast.classList.remove('translate-y-2', 'opacity-0');
+        });
+
+        setTimeout(() => {
+          toast.classList.add('opacity-0', 'translate-y-2');
+          setTimeout(() => {
+            if (toast.parentNode) toast.parentNode.removeChild(toast);
+          }, 200);
+        }, 3200);
+      }
+
+      // --- HELPER FUNCTIONS ---
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function formatNow() {
+        const d = new Date();
+        const pad = (n) => String(n).padStart(2, '0');
+        return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      }
+
+      function generateId(prefix = 'item') {
+        return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+      }
+
+      function copyToClipboard(text, successMsg = 'Đã sao chép vào bộ nhớ tạm!') {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => {
+            showToast(successMsg);
+          }).catch(() => {
+            fallbackCopy(text, successMsg);
+          });
+        } else {
+          fallbackCopy(text, successMsg);
+        }
+      }
+
+      function fallbackCopy(text, successMsg) {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          showToast(successMsg);
+        } catch (e) {
+          showToast('Không thể sao chép văn bản', 'error');
+        }
+      }
+
+      // --- CONFIRMATION DIALOG (In-page modal replacing window.confirm) ---
+      let pendingConfirmCallback = null;
+      function showConfirmDialog(title, message, onConfirm, isDestructive = true) {
+        document.getElementById('confirmTitle').textContent = title;
+        document.getElementById('confirmMessage').textContent = message;
+        
+        const proceedBtn = document.getElementById('confirmProceedBtn');
+        if (isDestructive) {
+          proceedBtn.className = 'px-5 py-2 text-sm font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-md shadow-rose-100 transition-all';
+        } else {
+          proceedBtn.className = 'px-5 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-md shadow-indigo-100 transition-all';
+        }
+
+        pendingConfirmCallback = onConfirm;
+        document.getElementById('confirmModal').classList.remove('hidden');
+      }
+
+      document.getElementById('confirmCancelBtn').addEventListener('click', () => {
+        document.getElementById('confirmModal').classList.add('hidden');
+        pendingConfirmCallback = null;
+      });
+
+      document.getElementById('confirmProceedBtn').addEventListener('click', () => {
+        document.getElementById('confirmModal').classList.add('hidden');
+        if (typeof pendingConfirmCallback === 'function') {
+          pendingConfirmCallback();
+        }
+        pendingConfirmCallback = null;
+      });
+
+      // --- STORAGE METER & BADGES ---
+      function updateStorageMeter() {
+        const activeItems = state.items.filter(i => !i.deleted);
+        const count = activeItems.length;
+        const simulatedMb = (count * 140 + 2400) / 1024;
+        const usedGb = simulatedMb.toFixed(1);
+        const percent = Math.min(Math.round((usedGb / 15) * 100), 100);
+
+        const percentEl = document.getElementById('storagePercentText');
+        const barEl = document.getElementById('storageProgressBar');
+        const usedTextEl = document.getElementById('storageUsedText');
+
+        if (percentEl) percentEl.textContent = `${percent}%`;
+        if (barEl) barEl.style.width = `${percent}%`;
+        if (usedTextEl) usedTextEl.textContent = `${usedGb} GB đã dùng`;
+      }
+
+      function updateNavBadges() {
+        const allCount = state.items.filter(i => !i.deleted).length;
+        const starCount = state.items.filter(i => !i.deleted && i.starred).length;
+        const trashCount = state.items.filter(i => i.deleted).length;
+
+        const bAll = document.getElementById('badgeAllCount');
+        const bStar = document.getElementById('badgeStarredCount');
+        const bTrash = document.getElementById('badgeTrashCount');
+
+        if (bAll) bAll.textContent = allCount;
+        if (bStar) bStar.textContent = starCount;
+        if (bTrash) bTrash.textContent = trashCount;
+      }
+
+      // --- BREADCRUMBS ---
+      function renderBreadcrumbs() {
+        const container = document.getElementById('breadcrumbContainer');
+        if (!container) return;
+
+        // Path trail
+        const trail = [];
+        if (state.currentNav === 'trash') {
+          trail.push({ id: 'trash', name: 'Thùng rác' });
+        } else if (state.currentNav === 'starred') {
+          trail.push({ id: 'starred', name: 'Đã gắn dấu sao' });
+        } else if (state.currentNav === 'recent') {
+          trail.push({ id: 'recent', name: 'Mở gần đây' });
+        } else if (state.currentNav.startsWith('type_')) {
+          const typeNames = {
+            type_word: 'Tài liệu Word',
+            type_excel: 'Bảng tính Excel',
+            type_powerpoint: 'PowerPoint Slide',
+            type_note: 'Ghi chú Note'
+          };
+          trail.push({ id: state.currentNav, name: typeNames[state.currentNav] || 'Loại tệp' });
+        } else {
+          // Standard hierarchy
+          trail.push({ id: 'root', name: 'Trang chủ' });
+          let currId = state.currentFolderId;
+          const chain = [];
+          while (currId && currId !== 'root') {
+            const folder = state.items.find(i => i.id === currId);
+            if (folder) {
+              chain.unshift(folder);
+              currId = folder.parentId;
+            } else {
+              break;
+            }
+          }
+          chain.forEach(f => trail.push({ id: f.id, name: f.name }));
+        }
+
+        let html = '';
+        trail.forEach((crumb, idx) => {
+          const isLast = idx === trail.length - 1;
+          if (idx > 0) {
+            html += `<span class="text-slate-300 font-bold">/</span>`;
+          }
+          if (isLast) {
+            html += `<span class="font-bold text-slate-800 px-1.5 py-0.5 rounded">${escapeHtml(crumb.name)}</span>`;
+          } else {
+            html += `<button class="breadcrumb-btn text-slate-500 hover:text-indigo-600 font-medium px-1.5 py-0.5 rounded hover:bg-slate-100 transition-colors" data-id="${crumb.id}">${escapeHtml(crumb.name)}</button>`;
+          }
+        });
+        container.innerHTML = html;
+
+        // Bind clicks
+        container.querySelectorAll('.breadcrumb-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            if (id === 'root' || state.items.some(i => i.id === id)) {
+              state.currentNav = 'all';
+              state.currentFolderId = id;
+            } else {
+              state.currentNav = id;
+            }
+            renderWorkspace();
+          });
+        });
+      }
+
+      // --- ITEM FILTER & SORT LOGIC ---
+      function getFilteredItems() {
+        let list = [...state.items];
+
+        // Deleted status
+        if (state.currentNav === 'trash') {
+          list = list.filter(i => i.deleted);
+        } else {
+          list = list.filter(i => !i.deleted);
+
+          // Nav filtering
+          if (state.currentNav === 'starred') {
+            list = list.filter(i => i.starred);
+          } else if (state.currentNav === 'recent') {
+            // all files sorted by updated
+          } else if (state.currentNav.startsWith('type_')) {
+            const targetType = state.currentNav.replace('type_', '');
+            list = list.filter(i => i.type === targetType);
+          } else {
+            // 'all' folder view
+            list = list.filter(i => (i.parentId || 'root') === state.currentFolderId);
+          }
+        }
+
+        // Search query filter
+        if (state.searchQuery.trim()) {
+          const q = state.searchQuery.toLowerCase().trim();
+          list = list.filter(i => {
+            const nameMatch = i.name.toLowerCase().includes(q);
+            const tagMatch = i.content && i.content.tags && i.content.tags.some(t => t.toLowerCase().includes(q));
+            return nameMatch || tagMatch;
+          });
+        }
+
+        // Sorting
+        list.sort((a, b) => {
+          if (state.sortBy === 'name_asc') {
+            return a.name.localeCompare(b.name, 'vi');
+          }
+          if (state.sortBy === 'name_desc') {
+            return b.name.localeCompare(a.name, 'vi');
+          }
+          if (state.sortBy === 'size') {
+            return (parseFloat(b.size) || 0) - (parseFloat(a.size) || 0);
+          }
+          // Default updated
+          return (b.updatedAt || '').localeCompare(a.updatedAt || '');
+        });
+
+        return list;
+      }
+
+      // --- RENDERING WORKSPACE ---
+      function renderWorkspace() {
+        renderBreadcrumbs();
+
+        const filtered = getFilteredItems();
+        const folders = filtered.filter(i => i.type === 'folder');
+        const files = filtered.filter(i => i.type !== 'folder');
+
+        const foldersContainer = document.getElementById('foldersContainer');
+        const filesContainer = document.getElementById('filesContainer');
+        const foldersSection = document.getElementById('foldersSection');
+        const filesSection = document.getElementById('filesSection');
+        const emptyStateView = document.getElementById('emptyStateView');
+        const emptyTrashBtn = document.getElementById('emptyTrashBtn');
+
+        // Toggle trash empty button
+        if (emptyTrashBtn) {
+          if (state.currentNav === 'trash' && filtered.length > 0) {
+            emptyTrashBtn.classList.remove('hidden');
+            emptyTrashBtn.classList.add('flex');
+          } else {
+            emptyTrashBtn.classList.add('hidden');
+            emptyTrashBtn.classList.remove('flex');
+          }
+        }
+
+        // Update counts
+        document.getElementById('folderCountLabel').textContent = folders.length;
+        document.getElementById('fileCountLabel').textContent = files.length;
+
+        // View mode classes
+        const isList = state.viewMode === 'list';
+        if (isList) {
+          foldersContainer.className = 'flex flex-col gap-2';
+          filesContainer.className = 'flex flex-col gap-2';
+        } else {
+          foldersContainer.className = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3';
+          filesContainer.className = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4';
+        }
+
+        // Section visibility
+        if (folders.length > 0) {
+          foldersSection.classList.remove('hidden');
+          renderFolderCards(folders, foldersContainer, isList);
+        } else {
+          foldersSection.classList.add('hidden');
+        }
+
+        if (files.length > 0) {
+          filesSection.classList.remove('hidden');
+          renderFileCards(files, filesContainer, isList);
+        } else {
+          filesSection.classList.add('hidden');
+        }
+
+        // Empty state check
+        if (folders.length === 0 && files.length === 0) {
+          emptyStateView.classList.remove('hidden');
+          emptyStateView.classList.add('flex');
+
+          if (state.searchQuery) {
+            document.getElementById('emptyTitle').textContent = `Không tìm thấy kết quả cho "${state.searchQuery}"`;
+            document.getElementById('emptySubtitle').textContent = 'Hãy thử tìm kiếm với từ khoá khác hoặc xoá bộ lọc.';
+          } else if (state.currentNav === 'trash') {
+            document.getElementById('emptyTitle').textContent = 'Thùng rác đang trống';
+            document.getElementById('emptySubtitle').textContent = 'Các tài liệu bạn xoá sẽ xuất hiện tại đây.';
+          } else if (state.currentNav === 'starred') {
+            document.getElementById('emptyTitle').textContent = 'Chưa có tài liệu được gắn sao';
+            document.getElementById('emptySubtitle').textContent = 'Nhấn vào biểu tượng ngôi sao ở mỗi tệp để truy cập nhanh.';
+          } else {
+            document.getElementById('emptyTitle').textContent = 'Thư mục này chưa có tệp nào';
+            document.getElementById('emptySubtitle').textContent = 'Bạn có thể tạo tài liệu Word, Excel, PowerPoint, Note hoặc tải tệp lên từ máy tính.';
+          }
+        } else {
+          emptyStateView.classList.add('hidden');
+          emptyStateView.classList.remove('flex');
+        }
+
+        // Search filter banner
+        const filterBanner = document.getElementById('filterInfoBanner');
+        if (state.searchQuery) {
+          filterBanner.classList.remove('hidden');
+          document.getElementById('filterBannerText').textContent = `Đang lọc theo: "${state.searchQuery}" (${filtered.length} kết quả)`;
+        } else {
+          filterBanner.classList.add('hidden');
+        }
+
+        updateNavBadges();
+      }
+
+      // --- RENDER FOLDER CARDS ---
+      function renderFolderCards(folders, container, isList) {
+        let html = '';
+        folders.forEach(folder => {
+          const colorStyles = {
+            amber: 'bg-amber-100 text-amber-600',
+            blue: 'bg-blue-100 text-blue-600',
+            emerald: 'bg-emerald-100 text-emerald-600',
+            purple: 'bg-purple-100 text-purple-600',
+            rose: 'bg-rose-100 text-rose-600'
+          };
+          const badgeClass = colorStyles[folder.color] || colorStyles.amber;
+
+          if (isList) {
+            html += `
+              <div class="folder-card bg-white p-3 rounded-xl border border-slate-200 hover:border-indigo-400 hover:shadow-sm transition-all flex items-center justify-between cursor-pointer group" data-id="${folder.id}">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="w-9 h-9 rounded-lg ${badgeClass} flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
+                  </div>
+                  <div class="truncate">
+                    <span class="font-bold text-sm text-slate-800 hover:text-indigo-600 truncate block">${escapeHtml(folder.name)}</span>
+                    <span class="text-[11px] text-slate-400">${folder.size || '0 mục'} • Cập nhật ${folder.updatedAt}</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-1.5 opacity-90 group-hover:opacity-100" onclick="event.stopPropagation()">
+                  <button class="star-btn p-1.5 rounded-lg hover:bg-slate-100 ${folder.starred ? 'text-amber-400' : 'text-slate-300 hover:text-amber-400'}" data-id="${folder.id}" title="Gắn dấu sao">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                  </button>
+                  ${renderItemActionsMenu(folder)}
+                </div>
+              </div>
+            `;
+          } else {
+            // Grid card
+            html += `
+              <div class="folder-card bg-white p-4 rounded-2xl border border-slate-200/90 hover:border-indigo-400 hover:shadow-md transition-all flex flex-col justify-between cursor-pointer group" data-id="${folder.id}">
+                <div class="flex items-start justify-between">
+                  <div class="w-10 h-10 rounded-xl ${badgeClass} flex items-center justify-center shadow-sm">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
+                  </div>
+                  <div class="flex items-center gap-1" onclick="event.stopPropagation()">
+                    <button class="star-btn p-1.5 rounded-lg hover:bg-slate-100 ${folder.starred ? 'text-amber-400' : 'text-slate-300 hover:text-amber-400'}" data-id="${folder.id}" title="Gắn dấu sao">
+                      <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    </button>
+                    ${renderItemActionsMenu(folder)}
+                  </div>
+                </div>
+                <div class="mt-3">
+                  <h3 class="font-bold text-sm text-slate-800 group-hover:text-indigo-600 transition-colors truncate" title="${escapeHtml(folder.name)}">${escapeHtml(folder.name)}</h3>
+                  <div class="flex items-center justify-between text-[11px] text-slate-400 mt-1">
+                    <span>${folder.size || '0 mục'}</span>
+                    <span>${folder.updatedAt.split(' ')[0]}</span>
+                  </div>
+                </div>
+              </div>
+            `;
+          }
+        });
+        container.innerHTML = html;
+
+        // Bind folder click to enter
+        container.querySelectorAll('.folder-card').forEach(card => {
+          card.addEventListener('click', () => {
+            const id = card.getAttribute('data-id');
+            state.currentFolderId = id;
+            state.currentNav = 'all';
+            renderWorkspace();
+          });
+        });
+
+        bindItemCardButtons(container);
+      }
+
+      // --- RENDER FILE CARDS ---
+      function renderFileCards(files, container, isList) {
+        let html = '';
+        files.forEach(file => {
+          const typeMeta = getFileTypeMeta(file.type);
+
+          if (isList) {
+            html += `
+              <div class="file-card bg-white p-3 rounded-xl border border-slate-200 hover:border-indigo-400 hover:shadow-sm transition-all flex items-center justify-between cursor-pointer group" data-id="${file.id}">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="w-9 h-9 rounded-lg ${typeMeta.badgeBg} ${typeMeta.textColor} flex items-center justify-center font-bold text-xs flex-shrink-0">
+                    ${typeMeta.symbol}
+                  </div>
+                  <div class="truncate">
+                    <span class="font-bold text-sm text-slate-800 hover:text-indigo-600 truncate block">${escapeHtml(file.name)}</span>
+                    <span class="text-[11px] text-slate-400">${typeMeta.label} • ${file.size} • ${file.updatedAt}</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-1.5 opacity-90 group-hover:opacity-100" onclick="event.stopPropagation()">
+                  <button class="star-btn p-1.5 rounded-lg hover:bg-slate-100 ${file.starred ? 'text-amber-400' : 'text-slate-300 hover:text-amber-400'}" data-id="${file.id}" title="Gắn dấu sao">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                  </button>
+                  <button class="download-card-btn p-1.5 rounded-lg hover:bg-indigo-50 text-slate-400 hover:text-indigo-600 transition-colors" data-id="${file.id}" title="Tải xuống tệp về máy">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                  </button>
+                  <button class="share-btn p-1.5 rounded-lg hover:bg-indigo-50 text-slate-400 hover:text-indigo-600 transition-colors" data-id="${file.id}" title="Chia sẻ qua Zalo, Gmail, Drive">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                  </button>
+                  ${renderItemActionsMenu(file)}
+                </div>
+              </div>
+            `;
+          } else {
+            // Grid card with document preview snippet
+            html += `
+              <div class="file-card bg-white rounded-2xl border border-slate-200/90 hover:border-indigo-400 hover:shadow-md transition-all flex flex-col justify-between overflow-hidden cursor-pointer group" data-id="${file.id}">
+                <!-- Card Header -->
+                <div class="p-4 pb-2">
+                  <div class="flex items-start justify-between">
+                    <div class="w-10 h-10 rounded-xl ${typeMeta.badgeBg} ${typeMeta.textColor} flex items-center justify-center font-bold text-sm shadow-sm">
+                      ${typeMeta.symbol}
+                    </div>
+                    <div class="flex items-center gap-1" onclick="event.stopPropagation()">
+                      <button class="star-btn p-1.5 rounded-lg hover:bg-slate-100 ${file.starred ? 'text-amber-400' : 'text-slate-300 hover:text-amber-400'}" data-id="${file.id}" title="Gắn dấu sao">
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                      </button>
+                      <button class="download-card-btn p-1.5 rounded-lg hover:bg-indigo-50 text-slate-400 hover:text-indigo-600 transition-colors" data-id="${file.id}" title="Tải xuống tệp về máy">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                      </button>
+                      <button class="share-btn p-1.5 rounded-lg hover:bg-indigo-50 text-slate-400 hover:text-indigo-600 transition-colors" data-id="${file.id}" title="Chia sẻ qua Zalo, Gmail, Drive">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                      </button>
+                      ${renderItemActionsMenu(file)}
+                    </div>
+                  </div>
+
+                  <h3 class="font-bold text-sm text-slate-800 group-hover:text-indigo-600 transition-colors mt-3 truncate" title="${escapeHtml(file.name)}">
+                    ${escapeHtml(file.name)}
+                  </h3>
+                </div>
+
+                <!-- Preview Snippet Box -->
+                <div class="px-4 py-2 bg-slate-50/80 border-t border-b border-slate-100 min-h-[52px] text-[11px] text-slate-500 line-clamp-2 leading-relaxed">
+                  ${renderFileSnippet(file)}
+                </div>
+
+                <!-- Card Footer -->
+                <div class="p-3 px-4 bg-white flex items-center justify-between text-[11px] text-slate-400">
+                  <span class="font-medium text-slate-500">${file.size}</span>
+                  <span>${file.updatedAt.split(' ')[0]}</span>
+                </div>
+              </div>
+            `;
+          }
+        });
+        container.innerHTML = html;
+
+        // Bind open editor on card click
+        container.querySelectorAll('.file-card').forEach(card => {
+          card.addEventListener('click', () => {
+            const id = card.getAttribute('data-id');
+            openFileEditor(id);
+          });
+        });
+
+        bindItemCardButtons(container);
+      }
+
+      function getFileTypeMeta(type) {
+        switch (type) {
+          case 'word':
+            return { symbol: 'W', badgeBg: 'bg-blue-100', textColor: 'text-blue-700', label: 'Văn bản Word' };
+          case 'excel':
+            return { symbol: 'X', badgeBg: 'bg-emerald-100', textColor: 'text-emerald-700', label: 'Bảng tính Excel' };
+          case 'powerpoint':
+            return { symbol: 'P', badgeBg: 'bg-orange-100', textColor: 'text-orange-700', label: 'PowerPoint Slide' };
+          case 'note':
+            return { symbol: 'N', badgeBg: 'bg-amber-100', textColor: 'text-amber-700', label: 'Ghi chú Note' };
+          default:
+            return { symbol: 'FILE', badgeBg: 'bg-slate-100', textColor: 'text-slate-700', label: 'Tài liệu' };
+        }
+      }
+
+      function renderFileSnippet(file) {
+        if (file.type === 'word') {
+          const plain = (file.content || '').replace(/<[^>]+>/g, ' ').trim();
+          return plain || 'Nhấp đúp để mở và biên tập văn bản Word...';
+        }
+        if (file.type === 'excel') {
+          const rows = file.content && file.content.rows ? file.content.rows.length : 0;
+          const cols = file.content && file.content.headers ? file.content.headers.length : 0;
+          return `Bảng tính với ${cols} cột và ${rows} hàng số liệu tính toán.`;
+        }
+        if (file.type === 'powerpoint') {
+          const count = file.content && file.content.slides ? file.content.slides.length : 0;
+          return `Bài thuyết trình trình chiếu gồm ${count} slide được thiết kế chuyên nghiệp.`;
+        }
+        if (file.type === 'note') {
+          return file.content && file.content.body ? escapeHtml(file.content.body) : 'Ghi chú công việc & checklist to-do...';
+        }
+        return 'Tài liệu định dạng chuyên nghiệp.';
+      }
+
+      // Context menu popup inside cards
+      function renderItemActionsMenu(item) {
+        return `
+          <div class="relative dropdown-wrapper">
+            <button class="more-menu-btn p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors" data-id="${item.id}" title="Tuỳ chọn thêm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+            </button>
+            <div class="item-context-menu hidden absolute right-0 mt-1 w-44 bg-white rounded-xl shadow-xl border border-slate-100 py-1.5 z-40 text-xs text-slate-700">
+              <button class="act-rename w-full text-left px-3 py-1.5 hover:bg-indigo-50 hover:text-indigo-600 flex items-center gap-2 font-medium" data-id="${item.id}">
+                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                <span>Đổi tên</span>
+              </button>
+              <button class="act-copy w-full text-left px-3 py-1.5 hover:bg-indigo-50 hover:text-indigo-600 flex items-center gap-2 font-medium" data-id="${item.id}">
+                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                <span>Tạo bản sao (Copy)</span>
+              </button>
+              <button class="act-move w-full text-left px-3 py-1.5 hover:bg-indigo-50 hover:text-indigo-600 flex items-center gap-2 font-medium" data-id="${item.id}">
+                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
+                <span>Di chuyển tới...</span>
+              </button>
+              <button class="act-download w-full text-left px-3 py-1.5 hover:bg-indigo-50 hover:text-indigo-600 flex items-center gap-2 font-medium" data-id="${item.id}">
+                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                <span>Tải xuống thiết bị</span>
+              </button>
+              <button class="act-share w-full text-left px-3 py-1.5 hover:bg-indigo-50 hover:text-indigo-600 flex items-center gap-2 font-medium" data-id="${item.id}">
+                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                <span>Chia sẻ qua Zalo/Mail</span>
+              </button>
+              <div class="h-px bg-slate-100 my-1"></div>
+              ${item.deleted ? `
+                <button class="act-restore w-full text-left px-3 py-1.5 hover:bg-emerald-50 text-emerald-600 flex items-center gap-2 font-medium" data-id="${item.id}">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                  <span>Khôi phục</span>
+                </button>
+                <button class="act-destroy w-full text-left px-3 py-1.5 hover:bg-rose-50 text-rose-600 flex items-center gap-2 font-medium" data-id="${item.id}">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                  <span>Xoá vĩnh viễn</span>
+                </button>
+              ` : `
+                <button class="act-delete w-full text-left px-3 py-1.5 hover:bg-rose-50 text-rose-600 flex items-center gap-2 font-medium" data-id="${item.id}">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                  <span>Chuyển vào thùng rác</span>
+                </button>
+              `}
+            </div>
+          </div>
+        `;
+      }
+
+      function bindItemCardButtons(container) {
+        // Star toggle
+        container.querySelectorAll('.star-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const item = state.items.find(i => i.id === id);
+            if (item) {
+              item.starred = !item.starred;
+              saveState();
+              renderWorkspace();
+              showToast(item.starred ? 'Đã thêm vào danh sách gắn sao ⭐' : 'Đã bỏ gắn sao');
+            }
+          });
+        });
+
+        // Direct Download Card Button
+        container.querySelectorAll('.download-card-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = btn.getAttribute('data-id');
+            downloadItem(id);
+          });
+        });
+
+        // Direct Share Button
+        container.querySelectorAll('.share-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            openShareModal(id);
+          });
+        });
+
+        // More Menu Dropdown Toggle
+        container.querySelectorAll('.more-menu-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // Close other dropdowns
+            document.querySelectorAll('.item-context-menu').forEach(m => m.classList.add('hidden'));
+            const wrapper = btn.closest('.dropdown-wrapper');
+            const menu = wrapper.querySelector('.item-context-menu');
+            if (menu) menu.classList.toggle('hidden');
+          });
+        });
+
+        // Actions inside dropdown:
+        // 1. Rename
+        container.querySelectorAll('.act-rename').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            openRenameModal(id);
+          });
+        });
+
+        // 2. Copy / Duplicate
+        container.querySelectorAll('.act-copy').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            duplicateItem(id);
+          });
+        });
+
+        // 3. Move
+        container.querySelectorAll('.act-move').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            openMoveModal(id);
+          });
+        });
+
+        // Download from dropdown
+        container.querySelectorAll('.act-download').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            downloadItem(id);
+          });
+        });
+
+        // 4. Share
+        container.querySelectorAll('.act-share').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            openShareModal(id);
+          });
+        });
+
+        // 5. Delete (Soft delete to trash)
+        container.querySelectorAll('.act-delete').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const item = state.items.find(i => i.id === id);
+            if (item) {
+              item.deleted = true;
+              item.updatedAt = formatNow();
+              saveState();
+              renderWorkspace();
+              showToast(`Đã chuyển "${item.name}" vào thùng rác`);
+            }
+          });
+        });
+
+        // 6. Restore from trash
+        container.querySelectorAll('.act-restore').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const item = state.items.find(i => i.id === id);
+            if (item) {
+              item.deleted = false;
+              item.updatedAt = formatNow();
+              saveState();
+              renderWorkspace();
+              showToast(`Đã khôi phục "${item.name}"`);
+            }
+          });
+        });
+
+        // 7. Destroy (Permanent)
+        container.querySelectorAll('.act-destroy').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const item = state.items.find(i => i.id === id);
+            if (item) {
+              showConfirmDialog(
+                'Xoá vĩnh viễn tệp này?',
+                `Hành động này sẽ xoá hoàn toàn "${item.name}" khỏi hệ thống và không thể hoàn tác.`,
+                () => {
+                  state.items = state.items.filter(i => i.id !== id);
+                  saveState();
+                  renderWorkspace();
+                  showToast('Đã xoá vĩnh viễn tệp', 'warning');
+                }
+              );
+            }
+          });
+        });
+      }
+
+      // Close dropdowns on outside click
+      window.addEventListener('click', () => {
+        document.querySelectorAll('.item-context-menu').forEach(m => m.classList.add('hidden'));
+        document.getElementById('newItemMenu').classList.add('hidden');
+        document.getElementById('sortMenu').classList.add('hidden');
+      });
+
+      // --- DUPLICATE / COPY ITEM ---
+      function duplicateItem(id) {
+        const item = state.items.find(i => i.id === id);
+        if (!item) return;
+
+        const clone = JSON.parse(JSON.stringify(item));
+        clone.id = generateId(item.type);
+        clone.name = `Bản sao của ${item.name}`;
+        clone.updatedAt = formatNow();
+        clone.starred = false;
+        clone.deleted = false;
+
+        state.items.unshift(clone);
+        saveState();
+        renderWorkspace();
+        showToast(`Đã tạo bản sao thành công cho "${item.name}"`);
+      }
+
+      // --- CREATE NEW FOLDER ---
+      const newFolderModal = document.getElementById('newFolderModal');
+      const newFolderNameInput = document.getElementById('newFolderNameInput');
+
+      function openNewFolderModal() {
+        newFolderNameInput.value = '';
+        state.selectedFolderColor = 'amber';
+        updateFolderColorButtons();
+        newFolderModal.classList.remove('hidden');
+        setTimeout(() => newFolderNameInput.focus(), 50);
+      }
+
+      function updateFolderColorButtons() {
+        document.querySelectorAll('#folderColorPicker .color-btn').forEach(btn => {
+          const c = btn.getAttribute('data-color');
+          if (c === state.selectedFolderColor) {
+            btn.classList.add('ring-2', `ring-${c}-500`);
+          } else {
+            btn.classList.remove('ring-2', `ring-${c}-500`);
+          }
+        });
+      }
+
+      document.querySelectorAll('#folderColorPicker .color-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.selectedFolderColor = btn.getAttribute('data-color');
+          updateFolderColorButtons();
+        });
+      });
+
+      document.getElementById('quickNewFolderBtn').addEventListener('click', openNewFolderModal);
+      document.getElementById('menuNewFolder').addEventListener('click', () => {
+        document.getElementById('newItemMenu').classList.add('hidden');
+        openNewFolderModal();
+      });
+      document.getElementById('emptyCreateFolderBtn').addEventListener('click', openNewFolderModal);
+      document.getElementById('closeNewFolderModalBtn').addEventListener('click', () => newFolderModal.classList.add('hidden'));
+      document.getElementById('cancelNewFolderBtn').addEventListener('click', () => newFolderModal.classList.add('hidden'));
+
+      document.getElementById('submitNewFolderBtn').addEventListener('click', () => {
+        const name = newFolderNameInput.value.trim();
+        if (!name) {
+          showToast('Vui lòng nhập tên thư mục', 'error');
+          return;
+        }
+
+        const newFolder = {
+          id: generateId('folder'),
+          name: name,
+          type: 'folder',
+          parentId: state.currentNav === 'all' ? state.currentFolderId : 'root',
+          starred: false,
+          color: state.selectedFolderColor,
+          updatedAt: formatNow(),
+          size: '0 mục'
+        };
+
+        state.items.unshift(newFolder);
+        saveState();
+        newFolderModal.classList.add('hidden');
+        renderWorkspace();
+        showToast(`Đã tạo thư mục "${name}" thành công!`);
+      });
+
+      // --- RENAME MODAL ---
+      const renameModal = document.getElementById('renameModal');
+      const renameInput = document.getElementById('renameInput');
+
+      function openRenameModal(id) {
+        const item = state.items.find(i => i.id === id);
+        if (!item) return;
+
+        state.activeRenamingId = id;
+        renameInput.value = item.name;
+        document.getElementById('renameModalTitle').textContent = `Đổi tên ${item.type === 'folder' ? 'thư mục' : 'tài liệu'}`;
+        renameModal.classList.remove('hidden');
+        setTimeout(() => {
+          renameInput.focus();
+          renameInput.select();
+        }, 50);
+      }
+
+      document.getElementById('closeRenameModalBtn').addEventListener('click', () => renameModal.classList.add('hidden'));
+      document.getElementById('cancelRenameBtn').addEventListener('click', () => renameModal.classList.add('hidden'));
+
+      document.getElementById('submitRenameBtn').addEventListener('click', () => {
+        const newName = renameInput.value.trim();
+        if (!newName) {
+          showToast('Tên không được để trống', 'error');
+          return;
+        }
+
+        const item = state.items.find(i => i.id === state.activeRenamingId);
+        if (item) {
+          item.name = newName;
+          item.updatedAt = formatNow();
+          saveState();
+          renameModal.classList.add('hidden');
+          renderWorkspace();
+          showToast(`Đã đổi tên thành "${newName}"`);
+        }
+      });
+
+      // --- MOVE MODAL ---
+      const moveModal = document.getElementById('moveModal');
+      let selectedDestinationFolderId = 'root';
+
+      function openMoveModal(id) {
+        const item = state.items.find(i => i.id === id);
+        if (!item) return;
+
+        state.activeMovingId = id;
+        document.getElementById('moveItemName').textContent = item.name;
+        selectedDestinationFolderId = item.parentId || 'root';
+
+        const listContainer = document.getElementById('moveFolderList');
+        // Folders list excluding the current item if it's a folder
+        const availableFolders = state.items.filter(i => i.type === 'folder' && !i.deleted && i.id !== id);
+
+        let html = `
+          <div class="move-folder-opt p-2.5 rounded-lg flex items-center justify-between cursor-pointer ${selectedDestinationFolderId === 'root' ? 'bg-indigo-100 text-indigo-700 font-bold' : 'hover:bg-slate-100'}" data-id="root">
+            <span class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+              <span>Trang chủ (Thư mục gốc)</span>
+            </span>
+            <span class="check-icon ${selectedDestinationFolderId === 'root' ? '' : 'hidden'} text-indigo-600">✓</span>
+          </div>
+        `;
+
+        availableFolders.forEach(f => {
+          const isSelected = selectedDestinationFolderId === f.id;
+          html += `
+            <div class="move-folder-opt p-2.5 rounded-lg flex items-center justify-between cursor-pointer ${isSelected ? 'bg-indigo-100 text-indigo-700 font-bold' : 'hover:bg-slate-100'}" data-id="${f.id}">
+              <span class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
+                <span>${escapeHtml(f.name)}</span>
+              </span>
+              <span class="check-icon ${isSelected ? '' : 'hidden'} text-indigo-600">✓</span>
+            </div>
+          `;
+        });
+
+        listContainer.innerHTML = html;
+
+        listContainer.querySelectorAll('.move-folder-opt').forEach(opt => {
+          opt.addEventListener('click', () => {
+            selectedDestinationFolderId = opt.getAttribute('data-id');
+            listContainer.querySelectorAll('.move-folder-opt').forEach(o => {
+              o.classList.remove('bg-indigo-100', 'text-indigo-700', 'font-bold');
+              o.querySelector('.check-icon').classList.add('hidden');
+            });
+            opt.classList.add('bg-indigo-100', 'text-indigo-700', 'font-bold');
+            opt.querySelector('.check-icon').classList.remove('hidden');
+          });
+        });
+
+        moveModal.classList.remove('hidden');
+      }
+
+      document.getElementById('closeMoveModalBtn').addEventListener('click', () => moveModal.classList.add('hidden'));
+      document.getElementById('cancelMoveBtn').addEventListener('click', () => moveModal.classList.add('hidden'));
+
+      document.getElementById('submitMoveBtn').addEventListener('click', () => {
+        const item = state.items.find(i => i.id === state.activeMovingId);
+        if (item) {
+          item.parentId = selectedDestinationFolderId;
+          item.updatedAt = formatNow();
+          saveState();
+          moveModal.classList.add('hidden');
+          renderWorkspace();
+          showToast(`Đã chuyển "${item.name}" tới thư mục thành công!`);
+        }
+      });
+
+      // --- EMPTY TRASH ---
+      document.getElementById('emptyTrashBtn').addEventListener('click', () => {
+        showConfirmDialog(
+          'Dọn sạch thùng rác?',
+          'Tất cả tài liệu và thư mục trong thùng rác sẽ bị xoá vĩnh viễn và không thể khôi phục.',
+          () => {
+            state.items = state.items.filter(i => !i.deleted);
+            saveState();
+            renderWorkspace();
+            showToast('Đã dọn sạch thùng rác', 'warning');
+          }
+        );
+      });
+
+      // --- SHARING SUITE (ZALO, GMAIL, DRIVE, OTHER APPS) ---
+      const shareModal = document.getElementById('shareModal');
+
+      function openShareModal(id) {
+        const item = state.items.find(i => i.id === id);
+        if (!item) return;
+
+        state.activeShareId = id;
+        document.getElementById('shareFileName').textContent = item.name;
+
+        // Base shareable URL simulation
+        const shareUrl = `https://docuspace.vn/share/${item.id}?token=${Math.random().toString(36).substr(2, 8)}`;
+        document.getElementById('shareLinkInput').value = shareUrl;
+
+        // Content excerpt for message templates
+        let summary = '';
+        if (item.type === 'word') {
+          summary = (item.content || '').replace(/<[^>]+>/g, ' ').slice(0, 150) + '...';
+        } else if (item.type === 'excel') {
+          summary = 'Báo cáo số liệu và bảng tính kế toán định dạng chuẩn Excel .xlsx';
+        } else if (item.type === 'powerpoint') {
+          summary = 'Bộ slide thuyết trình hội nghị và gọi vốn chuyên nghiệp.';
+        } else if (item.type === 'note') {
+          summary = (item.content && item.content.body) || 'Ghi chú công việc và danh sách việc cần làm';
+        }
+
+        // 1. Zalo Preview Template
+        const zaloMsg = `[DocuSpace Pro] 📄 Chia sẻ tài liệu: ${item.name}\n\nXin chào, tôi gửi bạn tài liệu "${item.name}".\nKích thước: ${item.size} • Cập nhật: ${item.updatedAt}\n\n👉 Nhấn để mở và xem tài liệu: ${shareUrl}`;
+        document.getElementById('zaloPreviewBox').textContent = zaloMsg;
+
+        // 2. Gmail Preview Template
+        const gmailRecipient = document.getElementById('gmailRecipientInput').value.trim();
+        const emailBody = `Kính gửi Anh/Chị,\n\nTôi xin gửi tài liệu: "${item.name}" đính kèm theo liên kết bên dưới:\n\n🔗 Liên kết truy cập: ${shareUrl}\n\nTóm tắt nội dung:\n${summary}\n\nTrân trọng,\nDocuSpace Pro Workspace`;
+        document.getElementById('gmailPreviewBox').textContent = `Tiêu đề: [Chia sẻ tài liệu] ${item.name}\n\n${emailBody}`;
+
+        // 3. Drive Status
+        document.getElementById('driveSyncStatus').innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Sẵn sàng đồng bộ trực tiếp';
+        const formatNames = {
+          word: 'Google Docs (.gdoc)',
+          excel: 'Google Sheets (.gsheet)',
+          powerpoint: 'Google Slides (.gslide)',
+          note: 'Google Keep / Doc'
+        };
+        document.getElementById('driveTargetFormat').textContent = formatNames[item.type] || 'Tệp Google Drive';
+
+        // Set default tab to Zalo
+        switchShareTab('zalo');
+        shareModal.classList.remove('hidden');
+      }
+
+      function switchShareTab(tabName) {
+        document.querySelectorAll('.share-tab').forEach(t => {
+          if (t.getAttribute('data-tab') === tabName) {
+            t.className = 'share-tab py-2.5 px-3 text-xs font-bold border-b-2 border-indigo-600 text-indigo-600 flex items-center gap-1.5 transition-all';
+          } else {
+            t.className = 'share-tab py-2.5 px-3 text-xs font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-1.5 transition-all';
+          }
+        });
+
+        document.getElementById('tabContentZalo').classList.add('hidden');
+        document.getElementById('tabContentGmail').classList.add('hidden');
+        document.getElementById('tabContentDrive').classList.add('hidden');
+        document.getElementById('tabContentOther').classList.add('hidden');
+
+        if (tabName === 'zalo') document.getElementById('tabContentZalo').classList.remove('hidden');
+        if (tabName === 'gmail') document.getElementById('tabContentGmail').classList.remove('hidden');
+        if (tabName === 'drive') document.getElementById('tabContentDrive').classList.remove('hidden');
+        if (tabName === 'other') document.getElementById('tabContentOther').classList.remove('hidden');
+      }
+
+      document.querySelectorAll('.share-tab').forEach(t => {
+        t.addEventListener('click', () => switchShareTab(t.getAttribute('data-tab')));
+      });
+
+      document.getElementById('closeShareModalBtn').addEventListener('click', () => shareModal.classList.add('hidden'));
+      document.getElementById('finishShareBtn').addEventListener('click', () => shareModal.classList.add('hidden'));
+
+      // Zalo Action 1: Copy formatted message
+      document.getElementById('copyZaloMessageBtn').addEventListener('click', () => {
+        const text = document.getElementById('zaloPreviewBox').textContent;
+        copyToClipboard(text, 'Đã sao chép tin nhắn định dạng Zalo!');
+      });
+
+      // Zalo Action 2: Open Zalo
+      document.getElementById('openZaloWebBtn').addEventListener('click', () => {
+        const text = encodeURIComponent(document.getElementById('zaloPreviewBox').textContent);
+        const url = `https://zalo.me/share?text=${text}`;
+        window.open(url, '_blank');
+        showToast('Đang mở Zalo để gửi tài liệu...');
+      });
+
+      // Zalo Action 3: Save QR
+      document.getElementById('downloadZaloQrBtn').addEventListener('click', () => {
+        showToast('Đã lưu mã QR chia sẻ Zalo');
+      });
+
+      // Gmail Action 1: Copy email content
+      document.getElementById('copyEmailContentBtn').addEventListener('click', () => {
+        const text = document.getElementById('gmailPreviewBox').textContent;
+        copyToClipboard(text, 'Đã sao chép nội dung email!');
+      });
+
+      // Gmail Action 2: Open Gmail Compose
+      document.getElementById('openGmailComposeBtn').addEventListener('click', () => {
+        const item = state.items.find(i => i.id === state.activeShareId);
+        if (!item) return;
+
+        const recipient = encodeURIComponent(document.getElementById('gmailRecipientInput').value.trim());
+        const subject = encodeURIComponent(`[DocuSpace Pro] Chia sẻ tài liệu: ${item.name}`);
+        const shareUrl = document.getElementById('shareLinkInput').value;
+        const body = encodeURIComponent(`Xin chào,\n\nTôi xin chia sẻ tài liệu "${item.name}" với bạn.\n\nLink tài liệu: ${shareUrl}\n\nTrân trọng!`);
+        
+        const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${recipient}&su=${subject}&body=${body}`;
+        window.open(gmailUrl, '_blank');
+        showToast('Đang mở trình soạn thư Gmail...');
+      });
+
+      // Drive Action 1: Sync to Drive
+      document.getElementById('syncDriveBtn').addEventListener('click', () => {
+        const statusEl = document.getElementById('driveSyncStatus');
+        statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-500 animate-spin"></span> Đang đồng bộ lên Google Drive...';
+        
+        setTimeout(() => {
+          statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Đã lưu thành công vào Google Drive!';
+          showToast('Đã đồng bộ tài liệu vào Google Drive của bạn! 🎉');
+        }, 800);
+      });
+
+      // Drive Action 2: Open Drive
+      document.getElementById('openGoogleDriveBtn').addEventListener('click', () => {
+        window.open('https://drive.google.com', '_blank');
+      });
+
+      // Other Apps: Copy Link
+      document.getElementById('copyShareLinkBtn').addEventListener('click', () => {
+        const link = document.getElementById('shareLinkInput').value;
+        copyToClipboard(link, 'Đã sao chép liên kết chia sẻ!');
+      });
+
+      // Other Apps: Native Web Share API
+      document.getElementById('nativeShareBtn').addEventListener('click', () => {
+        const item = state.items.find(i => i.id === state.activeShareId);
+        const link = document.getElementById('shareLinkInput').value;
+        if (navigator.share && item) {
+          navigator.share({
+            title: item.name,
+            text: `Chia sẻ tài liệu ${item.name} qua DocuSpace Pro`,
+            url: link
+          }).then(() => {
+            showToast('Đã chia sẻ thành công!');
+          }).catch(() => {
+            copyToClipboard(link);
+          });
+        } else {
+          copyToClipboard(link, 'Đã sao chép liên kết để chia sẻ qua app khác!');
+        }
+      });
+
+      // --- DISPATCH OPEN EDITOR BY FILE TYPE ---
+      function openFileEditor(id) {
+        const item = state.items.find(i => i.id === id);
+        if (!item || item.type === 'folder') return;
+
+        state.activeEditingId = id;
+
+        if (item.type === 'word') {
+          openWordEditor(item);
+        } else if (item.type === 'excel') {
+          openExcelEditor(item);
+        } else if (item.type === 'powerpoint') {
+          openPptEditor(item);
+        } else if (item.type === 'note') {
+          openNoteEditor(item);
+        }
+      }
+
+      // ==================== WORD (.docx) EDITOR ====================
+      const wordEditorModal = document.getElementById('wordEditorModal');
+      const wordTitleInput = document.getElementById('wordTitleInput');
+      const wordEditorContent = document.getElementById('wordEditorContent');
+      const wordSaveStatus = document.getElementById('wordSaveStatus');
+
+      function openWordEditor(item) {
+        wordTitleInput.value = item.name;
+        wordEditorContent.innerHTML = item.content || '<p>Bắt đầu nhập nội dung tại đây...</p>';
+        updateWordStats();
+        wordSaveStatus.textContent = 'Đã lưu';
+        wordEditorModal.classList.remove('hidden');
+      }
+
+      function updateWordStats() {
+        const text = wordEditorContent.innerText || '';
+        const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+        const chars = text.length;
+        document.getElementById('wordWordCount').textContent = words;
+        document.getElementById('wordCharCount').textContent = chars;
+      }
+
+      wordEditorContent.addEventListener('input', () => {
+        wordSaveStatus.textContent = 'Có thay đổi chưa lưu';
+        updateWordStats();
+      });
+
+      // Format buttons (Bold, Italic, etc.)
+      document.querySelectorAll('.format-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const cmd = btn.getAttribute('data-cmd');
+          document.execCommand(cmd, false, null);
+          wordEditorContent.focus();
+        });
+      });
+
+      // Heading buttons
+      document.querySelectorAll('.format-block-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tag = btn.getAttribute('data-format');
+          document.execCommand('formatBlock', false, tag);
+          wordEditorContent.focus();
+        });
+      });
+
+      // Insert Table button
+      document.getElementById('wordInsertTableBtn').addEventListener('click', () => {
+        const tableHtml = `
+          <table style="width: 100%; border-collapse: collapse; margin: 16px 0; border: 1px solid #cbd5e1;">
+            <thead>
+              <tr style="background-color: #f1f5f9;">
+                <th style="border: 1px solid #cbd5e1; padding: 8px; text-align: left;">Cột 1</th>
+                <th style="border: 1px solid #cbd5e1; padding: 8px; text-align: left;">Cột 2</th>
+                <th style="border: 1px solid #cbd5e1; padding: 8px; text-align: left;">Cột 3</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="border: 1px solid #cbd5e1; padding: 8px;">Dữ liệu A1</td>
+                <td style="border: 1px solid #cbd5e1; padding: 8px;">Dữ liệu A2</td>
+                <td style="border: 1px solid #cbd5e1; padding: 8px;">Dữ liệu A3</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid #cbd5e1; padding: 8px;">Dữ liệu B1</td>
+                <td style="border: 1px solid #cbd5e1; padding: 8px;">Dữ liệu B2</td>
+                <td style="border: 1px solid #cbd5e1; padding: 8px;">Dữ liệu B3</td>
+              </tr>
+            </tbody>
+          </table>
+          <p><br></p>
+        `;
+        document.execCommand('insertHTML', false, tableHtml);
+      });
+
+      function saveWordDoc() {
+        const item = state.items.find(i => i.id === state.activeEditingId);
+        if (item) {
+          item.name = wordTitleInput.value.trim() || item.name;
+          item.content = wordEditorContent.innerHTML;
+          item.updatedAt = formatNow();
+          saveState();
+          wordSaveStatus.textContent = 'Đã lưu lúc ' + formatNow().split(' ')[1];
+          renderWorkspace();
+          showToast(`Đã lưu "${item.name}"`);
+        }
+      }
+
+      document.getElementById('wordSaveBtn').addEventListener('click', saveWordDoc);
+      document.getElementById('closeWordEditorBtn').addEventListener('click', () => {
+        saveWordDoc();
+        wordEditorModal.classList.add('hidden');
+      });
+
+      document.getElementById('wordDownloadBtn').addEventListener('click', () => {
+        saveWordDoc();
+        if (state.activeEditingId) {
+          downloadItem(state.activeEditingId);
+        }
+      });
+
+      // ==================== EXCEL (.xlsx) EDITOR ====================
+      const excelEditorModal = document.getElementById('excelEditorModal');
+      const excelTitleInput = document.getElementById('excelTitleInput');
+      const excelTable = document.getElementById('excelTable');
+      const excelFormulaInput = document.getElementById('excelFormulaInput');
+      const excelActiveCellLabel = document.getElementById('excelActiveCellLabel');
+      const excelSaveStatus = document.getElementById('excelSaveStatus');
+
+      let currentExcelData = {
+        headers: ['Hạng mục', 'Doanh thu (VNĐ)', 'Chi phí (VNĐ)', 'Lợi nhuận (VNĐ)', 'Tăng trưởng'],
+        rows: [
+          ['Sản phẩm A', '120000000', '80000000', '40000000', '15%'],
+          ['Sản phẩm B', '250000000', '160000000', '90000000', '22%'],
+          ['Dịch vụ C', '90000000', '45000000', '45000000', '10%']
+        ]
+      };
+      let activeCellCoord = { r: 0, c: 0 };
+
+      function openExcelEditor(item) {
+        excelTitleInput.value = item.name;
+        if (item.content && item.content.headers && item.content.rows) {
+          currentExcelData = JSON.parse(JSON.stringify(item.content));
+        }
+        excelSaveStatus.textContent = 'Đã lưu';
+        renderExcelTable();
+        excelEditorModal.classList.remove('hidden');
+      }
+
+      function renderExcelTable() {
+        const colLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let theadHtml = '<thead class="bg-slate-100 text-slate-700 font-semibold select-none"><tr><th class="border border-slate-300 w-10 text-center py-1.5 bg-slate-200">#</th>';
+
+        currentExcelData.headers.forEach((h, colIdx) => {
+          const letter = colLetters[colIdx] || `C${colIdx + 1}`;
+          theadHtml += `
+            <th class="border border-slate-300 px-3 py-1.5 text-center min-w-[140px]">
+              <div class="text-[10px] text-slate-400 font-mono">${letter}</div>
+              <div class="header-cell outline-none" contenteditable="true" data-c="${colIdx}">${escapeHtml(h)}</div>
+            </th>
+          `;
+        });
+        theadHtml += '</tr></thead>';
+
+        let tbodyHtml = '<tbody>';
+        currentExcelData.rows.forEach((row, rowIdx) => {
+          tbodyHtml += `<tr><td class="border border-slate-300 text-center bg-slate-100 font-mono text-slate-400 select-none py-1">${rowIdx + 1}</td>`;
+          currentExcelData.headers.forEach((_, colIdx) => {
+            const val = row[colIdx] !== undefined ? row[colIdx] : '';
+            const isSelected = activeCellCoord.r === rowIdx && activeCellCoord.c === colIdx;
+            tbodyHtml += `
+              <td class="grid-cell border border-slate-300 p-1.5 outline-none font-mono text-xs ${isSelected ? 'bg-indigo-50 ring-2 ring-indigo-500' : ''}" 
+                  contenteditable="true" 
+                  data-r="${rowIdx}" 
+                  data-c="${colIdx}">${escapeHtml(val)}</td>
+            `;
+          });
+          tbodyHtml += '</tr>';
+        });
+        tbodyHtml += '</tbody>';
+
+        excelTable.innerHTML = theadHtml + tbodyHtml;
+
+        // Bind header edits
+        excelTable.querySelectorAll('.header-cell').forEach(th => {
+          th.addEventListener('input', () => {
+            const c = parseInt(th.getAttribute('data-c'), 10);
+            currentExcelData.headers[c] = th.innerText;
+            excelSaveStatus.textContent = 'Có thay đổi';
+          });
+        });
+
+        // Bind grid cell selection and edits
+        excelTable.querySelectorAll('.grid-cell').forEach(cell => {
+          cell.addEventListener('focus', () => {
+            const r = parseInt(cell.getAttribute('data-r'), 10);
+            const c = parseInt(cell.getAttribute('data-c'), 10);
+            activeCellCoord = { r, c };
+            const letter = colLetters[c] || `C${c + 1}`;
+            excelActiveCellLabel.textContent = `${letter}${r + 1}`;
+            excelFormulaInput.value = cell.innerText;
+          });
+
+          cell.addEventListener('input', () => {
+            const r = parseInt(cell.getAttribute('data-r'), 10);
+            const c = parseInt(cell.getAttribute('data-c'), 10);
+            if (!currentExcelData.rows[r]) currentExcelData.rows[r] = [];
+            currentExcelData.rows[r][c] = cell.innerText;
+            excelFormulaInput.value = cell.innerText;
+            excelSaveStatus.textContent = 'Có thay đổi';
+          });
+        });
+      }
+
+      // Formula bar sync
+      excelFormulaInput.addEventListener('input', () => {
+        const { r, c } = activeCellCoord;
+        const cell = excelTable.querySelector(`.grid-cell[data-r="${r}"][data-c="${c}"]`);
+        if (cell) {
+          cell.innerText = excelFormulaInput.value;
+          if (!currentExcelData.rows[r]) currentExcelData.rows[r] = [];
+          currentExcelData.rows[r][c] = excelFormulaInput.value;
+          excelSaveStatus.textContent = 'Có thay đổi';
+        }
+      });
+
+      // Add Row
+      document.getElementById('excelAddRowBtn').addEventListener('click', () => {
+        const newRow = currentExcelData.headers.map(() => '');
+        currentExcelData.rows.push(newRow);
+        renderExcelTable();
+        excelSaveStatus.textContent = 'Có thay đổi';
+      });
+
+      // Add Column
+      document.getElementById('excelAddColBtn').addEventListener('click', () => {
+        const colIdx = currentExcelData.headers.length + 1;
+        currentExcelData.headers.push(`Cột ${colIdx}`);
+        currentExcelData.rows.forEach(r => r.push(''));
+        renderExcelTable();
+        excelSaveStatus.textContent = 'Có thay đổi';
+      });
+
+      // Auto SUM
+      document.getElementById('excelAutoSumBtn').addEventListener('click', () => {
+        const { c } = activeCellCoord;
+        let sum = 0;
+        let count = 0;
+        currentExcelData.rows.forEach(row => {
+          const num = parseFloat(row[c]);
+          if (!isNaN(num)) {
+            sum += num;
+            count++;
+          }
+        });
+
+        // Add a total row
+        const totalRow = currentExcelData.headers.map((_, idx) => {
+          if (idx === 0) return 'TỔNG CỘNG (SUM)';
+          if (idx === c) return sum.toLocaleString('vi-VN');
+          return '';
+        });
+        currentExcelData.rows.push(totalRow);
+        renderExcelTable();
+        showToast(`Đã tự động tính tổng: ${sum.toLocaleString('vi-VN')}`);
+      });
+
+      // Auto AVERAGE
+      document.getElementById('excelAutoAvgBtn').addEventListener('click', () => {
+        const { c } = activeCellCoord;
+        let sum = 0;
+        let count = 0;
+        currentExcelData.rows.forEach(row => {
+          const num = parseFloat(row[c]);
+          if (!isNaN(num)) {
+            sum += num;
+            count++;
+          }
+        });
+        const avg = count > 0 ? (sum / count).toFixed(2) : 0;
+        const avgRow = currentExcelData.headers.map((_, idx) => {
+          if (idx === 0) return 'TRUNG BÌNH (AVERAGE)';
+          if (idx === c) return String(avg);
+          return '';
+        });
+        currentExcelData.rows.push(avgRow);
+        renderExcelTable();
+        showToast(`Đã tính giá trị trung bình: ${avg}`);
+      });
+
+      function saveExcelDoc() {
+        const item = state.items.find(i => i.id === state.activeEditingId);
+        if (item) {
+          item.name = excelTitleInput.value.trim() || item.name;
+          item.content = JSON.parse(JSON.stringify(currentExcelData));
+          item.updatedAt = formatNow();
+          saveState();
+          excelSaveStatus.textContent = 'Đã lưu lúc ' + formatNow().split(' ')[1];
+          renderWorkspace();
+          showToast(`Đã lưu bảng tính "${item.name}"`);
+        }
+      }
+
+      document.getElementById('excelSaveBtn').addEventListener('click', saveExcelDoc);
+      document.getElementById('closeExcelEditorBtn').addEventListener('click', () => {
+        saveExcelDoc();
+        excelEditorModal.classList.add('hidden');
+      });
+
+      // Export CSV / Excel
+      document.getElementById('excelExportCsvBtn').addEventListener('click', () => {
+        saveExcelDoc();
+        if (state.activeEditingId) {
+          downloadItem(state.activeEditingId);
+        }
+      });
+
+      // ==================== POWERPOINT (.pptx) EDITOR ====================
+      const pptEditorModal = document.getElementById('pptEditorModal');
+      const pptTitleInput = document.getElementById('pptTitleInput');
+      const pptSlideCanvas = document.getElementById('pptSlideCanvas');
+      const pptSlideTagInput = document.getElementById('pptSlideTagInput');
+      const pptSlideTitleInput = document.getElementById('pptSlideTitleInput');
+      const pptSlideSubtitleInput = document.getElementById('pptSlideSubtitleInput');
+      const pptBulletsList = document.getElementById('pptBulletsList');
+      const pptSlideThumbnails = document.getElementById('pptSlideThumbnails');
+      const pptThemeSelect = document.getElementById('pptThemeSelect');
+      const pptSaveStatus = document.getElementById('pptSaveStatus');
+
+      let currentPptData = {
+        slides: [
+          {
+            tag: 'GIỚI THIỆU',
+            title: 'Kế hoạch Phát triển 2026',
+            subtitle: 'Chiến lược bứt phá công nghệ và khách hàng',
+            bullets: ['Tập trung vào trải nghiệm người dùng', 'Ứng dụng trí tuệ nhân tạo AI'],
+            theme: 'ocean-blue'
+          }
+        ]
+      };
+
+      function openPptEditor(item) {
+        pptTitleInput.value = item.name;
+        if (item.content && item.content.slides && item.content.slides.length > 0) {
+          currentPptData = JSON.parse(JSON.stringify(item.content));
+        }
+        state.activeSlideIndex = 0;
+        pptSaveStatus.textContent = 'Đã lưu';
+        renderPptThumbnails();
+        loadActiveSlide();
+        pptEditorModal.classList.remove('hidden');
+      }
+
+      function loadActiveSlide() {
+        const slide = currentPptData.slides[state.activeSlideIndex] || currentPptData.slides[0];
+        if (!slide) return;
+
+        pptSlideTagInput.value = slide.tag || 'SLIDE THUYẾT TRÌNH';
+        pptSlideTitleInput.value = slide.title || 'Tiêu đề Slide';
+        pptSlideSubtitleInput.value = slide.subtitle || 'Mô tả tóm tắt...';
+        pptThemeSelect.value = slide.theme || 'modern-light';
+        applyPptTheme(slide.theme || 'modern-light', pptSlideCanvas);
+
+        document.getElementById('pptSlideNumberLabel').textContent = `Slide ${state.activeSlideIndex + 1} / ${currentPptData.slides.length}`;
+
+        // Render bullets
+        let bHtml = '';
+        (slide.bullets || []).forEach((bullet, idx) => {
+          bHtml += `
+            <div class="flex items-center gap-2 group">
+              <span class="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0"></span>
+              <input type="text" class="ppt-bullet-input flex-1 bg-transparent border-b border-transparent hover:border-slate-300 focus:border-orange-500 outline-none text-sm text-slate-700 py-1" value="${escapeHtml(bullet)}" data-idx="${idx}">
+              <button class="ppt-del-bullet p-1 text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity" data-idx="${idx}">✕</button>
+            </div>
+          `;
+        });
+        pptBulletsList.innerHTML = bHtml;
+
+        // Bind bullet edits
+        pptBulletsList.querySelectorAll('.ppt-bullet-input').forEach(inp => {
+          inp.addEventListener('input', () => {
+            const idx = parseInt(inp.getAttribute('data-idx'), 10);
+            slide.bullets[idx] = inp.value;
+            pptSaveStatus.textContent = 'Có thay đổi';
+          });
+        });
+
+        pptBulletsList.querySelectorAll('.ppt-del-bullet').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const idx = parseInt(btn.getAttribute('data-idx'), 10);
+            slide.bullets.splice(idx, 1);
+            loadActiveSlide();
+            renderPptThumbnails();
+          });
+        });
+      }
+
+      function applyPptTheme(theme, el) {
+        el.className = 'w-full max-w-4xl aspect-[16/9] rounded-xl shadow-2xl p-10 flex flex-col justify-between relative transition-all border ';
+        if (theme === 'ocean-blue') {
+          el.className += 'bg-gradient-to-br from-blue-900 to-indigo-950 text-white border-blue-800';
+        } else if (theme === 'dark-slate') {
+          el.className += 'bg-slate-900 text-white border-slate-800';
+        } else if (theme === 'warm-orange') {
+          el.className += 'bg-gradient-to-br from-orange-500 to-amber-600 text-white border-orange-400';
+        } else {
+          el.className += 'bg-white text-slate-900 border-slate-200';
+        }
+      }
+
+      pptSlideTagInput.addEventListener('input', () => {
+        const s = currentPptData.slides[state.activeSlideIndex];
+        if (s) { s.tag = pptSlideTagInput.value; renderPptThumbnails(); }
+      });
+      pptSlideTitleInput.addEventListener('input', () => {
+        const s = currentPptData.slides[state.activeSlideIndex];
+        if (s) { s.title = pptSlideTitleInput.value; renderPptThumbnails(); }
+      });
+      pptSlideSubtitleInput.addEventListener('input', () => {
+        const s = currentPptData.slides[state.activeSlideIndex];
+        if (s) { s.subtitle = pptSlideSubtitleInput.value; renderPptThumbnails(); }
+      });
+      pptThemeSelect.addEventListener('change', () => {
+        const s = currentPptData.slides[state.activeSlideIndex];
+        if (s) {
+          s.theme = pptThemeSelect.value;
+          applyPptTheme(s.theme, pptSlideCanvas);
+          renderPptThumbnails();
+        }
+      });
+
+      document.getElementById('pptAddBulletBtn').addEventListener('click', () => {
+        const s = currentPptData.slides[state.activeSlideIndex];
+        if (s) {
+          if (!s.bullets) s.bullets = [];
+          s.bullets.push('Ý trình bày trọng tâm mới...');
+          loadActiveSlide();
+        }
+      });
+
+      function renderPptThumbnails() {
+        let html = '';
+        currentPptData.slides.forEach((s, idx) => {
+          const isActive = idx === state.activeSlideIndex;
+          html += `
+            <div class="slide-thumb p-2.5 rounded-xl border cursor-pointer transition-all ${isActive ? 'bg-white border-orange-500 shadow-md ring-2 ring-orange-200' : 'bg-slate-50 border-slate-200 hover:border-slate-300'}" data-idx="${idx}">
+              <div class="text-[10px] font-bold text-slate-400 mb-1">SLIDE ${idx + 1}</div>
+              <div class="text-xs font-bold text-slate-800 truncate">${escapeHtml(s.title || 'Slide')}</div>
+              <div class="text-[10px] text-slate-400 truncate mt-0.5">${escapeHtml(s.subtitle || '')}</div>
+            </div>
+          `;
+        });
+        pptSlideThumbnails.innerHTML = html;
+
+        pptSlideThumbnails.querySelectorAll('.slide-thumb').forEach(thumb => {
+          thumb.addEventListener('click', () => {
+            state.activeSlideIndex = parseInt(thumb.getAttribute('data-idx'), 10);
+            renderPptThumbnails();
+            loadActiveSlide();
+          });
+        });
+      }
+
+      // Add slide
+      document.getElementById('pptAddSlideBtn').addEventListener('click', () => {
+        const newSlide = {
+          tag: 'SLIDE MỚI',
+          title: 'Tiêu đề Slide Tiếp Theo',
+          subtitle: 'Mô tả nội dung bài thuyết trình',
+          bullets: ['Điểm nổi bật 1', 'Điểm nổi bật 2'],
+          theme: 'modern-light'
+        };
+        currentPptData.slides.push(newSlide);
+        state.activeSlideIndex = currentPptData.slides.length - 1;
+        renderPptThumbnails();
+        loadActiveSlide();
+      });
+
+      // Duplicate slide
+      document.getElementById('pptDuplicateSlideBtn').addEventListener('click', () => {
+        const curr = currentPptData.slides[state.activeSlideIndex];
+        if (curr) {
+          const clone = JSON.parse(JSON.stringify(curr));
+          clone.title = `Bản sao - ${clone.title}`;
+          currentPptData.slides.splice(state.activeSlideIndex + 1, 0, clone);
+          state.activeSlideIndex += 1;
+          renderPptThumbnails();
+          loadActiveSlide();
+          showToast('Đã nhân bản slide');
+        }
+      });
+
+      // Delete slide
+      document.getElementById('pptDeleteSlideBtn').addEventListener('click', () => {
+        if (currentPptData.slides.length <= 1) {
+          showToast('Cần giữ ít nhất 1 slide trong bài trình chiếu', 'warning');
+          return;
+        }
+        currentPptData.slides.splice(state.activeSlideIndex, 1);
+        state.activeSlideIndex = Math.max(0, state.activeSlideIndex - 1);
+        renderPptThumbnails();
+        loadActiveSlide();
+        showToast('Đã xoá slide');
+      });
+
+      function savePptDoc() {
+        const item = state.items.find(i => i.id === state.activeEditingId);
+        if (item) {
+          item.name = pptTitleInput.value.trim() || item.name;
+          item.content = JSON.parse(JSON.stringify(currentPptData));
+          item.updatedAt = formatNow();
+          saveState();
+          pptSaveStatus.textContent = 'Đã lưu lúc ' + formatNow().split(' ')[1];
+          renderWorkspace();
+          showToast(`Đã lưu bài thuyết trình "${item.name}"`);
+        }
+      }
+
+      document.getElementById('pptSaveBtn').addEventListener('click', savePptDoc);
+      document.getElementById('closePptEditorBtn').addEventListener('click', () => {
+        savePptDoc();
+        pptEditorModal.classList.add('hidden');
+      });
+
+      // --- FULLSCREEN SLIDESHOW ---
+      const slideshowModal = document.getElementById('slideshowModal');
+      const slideshowContent = document.getElementById('slideshowContent');
+      let slideshowIndex = 0;
+
+      function renderSlideshow() {
+        const s = currentPptData.slides[slideshowIndex];
+        if (!s) return;
+
+        document.getElementById('slideshowCounter').textContent = `${slideshowIndex + 1} / ${currentPptData.slides.length}`;
+
+        let bulletsHtml = '';
+        (s.bullets || []).forEach(b => {
+          bulletsHtml += `
+            <li class="flex items-center gap-3 text-lg sm:text-2xl text-slate-200">
+              <span class="w-3 h-3 rounded-full bg-orange-500 flex-shrink-0"></span>
+              <span>${escapeHtml(b)}</span>
+            </li>
+          `;
+        });
+
+        slideshowContent.innerHTML = `
+          <div>
+            <span class="text-xs sm:text-sm font-bold uppercase tracking-widest text-orange-400 block mb-2">${escapeHtml(s.tag || '')}</span>
+            <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight">${escapeHtml(s.title || '')}</h1>
+            <p class="text-lg sm:text-xl text-slate-400 mt-2">${escapeHtml(s.subtitle || '')}</p>
+          </div>
+          <ul class="my-8 space-y-4">
+            ${bulletsHtml}
+          </ul>
+          <div class="flex items-center justify-between text-xs text-slate-500 border-t border-slate-800 pt-4">
+            <span>DocuSpace Pro Presentation</span>
+            <span>Trang ${slideshowIndex + 1}</span>
+          </div>
+        `;
+      }
+
+      document.getElementById('pptPlaySlideshowBtn').addEventListener('click', () => {
+        slideshowIndex = state.activeSlideIndex;
+        renderSlideshow();
+        slideshowModal.classList.remove('hidden');
+      });
+
+      document.getElementById('slideshowPrevBtn').addEventListener('click', () => {
+        if (slideshowIndex > 0) {
+          slideshowIndex--;
+          renderSlideshow();
+        }
+      });
+
+      document.getElementById('slideshowNextBtn').addEventListener('click', () => {
+        if (slideshowIndex < currentPptData.slides.length - 1) {
+          slideshowIndex++;
+          renderSlideshow();
+        }
+      });
+
+      document.getElementById('closeSlideshowBtn').addEventListener('click', () => {
+        slideshowModal.classList.add('hidden');
+      });
+
+      window.addEventListener('keydown', (e) => {
+        if (!slideshowModal.classList.contains('hidden')) {
+          if (e.key === 'ArrowRight' || e.key === 'Space') {
+            if (slideshowIndex < currentPptData.slides.length - 1) {
+              slideshowIndex++;
+              renderSlideshow();
+            }
+          } else if (e.key === 'ArrowLeft') {
+            if (slideshowIndex > 0) {
+              slideshowIndex--;
+              renderSlideshow();
+            }
+          } else if (e.key === 'Escape') {
+            slideshowModal.classList.add('hidden');
+          }
+        }
+      });
+
+      // ==================== NOTE CHUYÊN NGHIỆP (.note) EDITOR ====================
+      const noteEditorModal = document.getElementById('noteEditorModal');
+      const noteTitleInput = document.getElementById('noteTitleInput');
+      const noteBodyInput = document.getElementById('noteBodyInput');
+      const noteChecklistContainer = document.getElementById('noteChecklistContainer');
+      const noteSaveStatus = document.getElementById('noteSaveStatus');
+
+      let currentNoteData = {
+        body: '',
+        tags: ['GhiChu', 'KeHoach'],
+        tasks: []
+      };
+
+      function openNoteEditor(item) {
+        noteTitleInput.value = item.name;
+        if (item.content) {
+          currentNoteData = JSON.parse(JSON.stringify(item.content));
+        } else {
+          currentNoteData = { body: '', tags: ['CongViec'], tasks: [] };
+        }
+        noteBodyInput.value = currentNoteData.body || '';
+        noteSaveStatus.textContent = 'Đã lưu';
+        renderNoteChecklist();
+        noteEditorModal.classList.remove('hidden');
+      }
+
+      function renderNoteChecklist() {
+        let html = '';
+        (currentNoteData.tasks || []).forEach((t, idx) => {
+          html += `
+            <div class="flex items-center justify-between p-2.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl border border-slate-200/80 transition-colors group">
+              <label class="flex items-center gap-3 flex-1 cursor-pointer">
+                <input type="checkbox" class="note-task-chk w-4 h-4 text-amber-600 rounded focus:ring-amber-500" data-idx="${idx}" ${t.done ? 'checked' : ''}>
+                <span class="text-xs ${t.done ? 'line-through text-slate-400 font-normal' : 'text-slate-800 font-medium'}">${escapeHtml(t.text)}</span>
+              </label>
+              <button class="note-task-del p-1 text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity" data-idx="${idx}">✕</button>
+            </div>
+          `;
+        });
+        noteChecklistContainer.innerHTML = html;
+
+        noteChecklistContainer.querySelectorAll('.note-task-chk').forEach(chk => {
+          chk.addEventListener('change', () => {
+            const idx = parseInt(chk.getAttribute('data-idx'), 10);
+            currentNoteData.tasks[idx].done = chk.checked;
+            renderNoteChecklist();
+          });
+        });
+
+        noteChecklistContainer.querySelectorAll('.note-task-del').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const idx = parseInt(btn.getAttribute('data-idx'), 10);
+            currentNoteData.tasks.splice(idx, 1);
+            renderNoteChecklist();
+          });
+        });
+      }
+
+      document.getElementById('noteAddChecklistBtn').addEventListener('click', () => {
+        const text = window.prompt ? '' : ''; // will use custom prompt
+        const taskText = promptCustomTask();
+      });
+
+      function promptCustomTask() {
+        const title = `Việc cần làm #${(currentNoteData.tasks || []).length + 1}`;
+        if (!currentNoteData.tasks) currentNoteData.tasks = [];
+        currentNoteData.tasks.push({
+          id: generateId('t'),
+          text: title,
+          done: false
+        });
+        renderNoteChecklist();
+        showToast('Đã thêm mục việc mới vào ghi chú');
+      }
+
+      function saveNoteDoc() {
+        const item = state.items.find(i => i.id === state.activeEditingId);
+        if (item) {
+          item.name = noteTitleInput.value.trim() || item.name;
+          currentNoteData.body = noteBodyInput.value;
+          item.content = JSON.parse(JSON.stringify(currentNoteData));
+          item.updatedAt = formatNow();
+          saveState();
+          noteSaveStatus.textContent = 'Đã lưu lúc ' + formatNow().split(' ')[1];
+          renderWorkspace();
+          showToast(`Đã lưu ghi chú "${item.name}"`);
+        }
+      }
+
+      document.getElementById('noteSaveBtn').addEventListener('click', saveNoteDoc);
+      document.getElementById('closeNoteEditorBtn').addEventListener('click', () => {
+        saveNoteDoc();
+        noteEditorModal.classList.add('hidden');
+      });
+
+      // --- CREATE NEW FILES (WORD, EXCEL, PPT, NOTE) VIA MENU ---
+      document.getElementById('menuNewWord').addEventListener('click', () => {
+        document.getElementById('newItemMenu').classList.add('hidden');
+        const newItem = {
+          id: generateId('word'),
+          name: `Tài liệu Word ${state.items.length + 1}.docx`,
+          type: 'word',
+          parentId: state.currentNav === 'all' ? state.currentFolderId : 'root',
+          starred: false,
+          updatedAt: formatNow(),
+          size: '1.1 MB',
+          content: '<h1>TIÊU ĐỀ TÀI LIỆU MỚI</h1><p>Bắt đầu nhập nội dung tài liệu tại đây...</p>'
+        };
+        state.items.unshift(newItem);
+        saveState();
+        renderWorkspace();
+        openFileEditor(newItem.id);
+        showToast('Đã tạo tài liệu Word mới');
+      });
+
+      document.getElementById('menuNewExcel').addEventListener('click', () => {
+        document.getElementById('newItemMenu').classList.add('hidden');
+        const newItem = {
+          id: generateId('excel'),
+          name: `Bảng tính Số liệu ${state.items.length + 1}.xlsx`,
+          type: 'excel',
+          parentId: state.currentNav === 'all' ? state.currentFolderId : 'root',
+          starred: false,
+          updatedAt: formatNow(),
+          size: '640 KB',
+          content: {
+            headers: ['Mã hàng', 'Tên sản phẩm', 'Số lượng', 'Đơn giá', 'Thành tiền'],
+            rows: [
+              ['SP01', 'Máy tính xách tay', '10', '15000000', '150000000'],
+              ['SP02', 'Bàn phím cơ', '25', '1200000', '30000000']
+            ]
+          }
+        };
+        state.items.unshift(newItem);
+        saveState();
+        renderWorkspace();
+        openFileEditor(newItem.id);
+        showToast('Đã tạo bảng tính Excel mới');
+      });
+
+      document.getElementById('menuNewPPT').addEventListener('click', () => {
+        document.getElementById('newItemMenu').classList.add('hidden');
+        const newItem = {
+          id: generateId('ppt'),
+          name: `Trình chiếu Thuyết trình ${state.items.length + 1}.pptx`,
+          type: 'powerpoint',
+          parentId: state.currentNav === 'all' ? state.currentFolderId : 'root',
+          starred: false,
+          updatedAt: formatNow(),
+          size: '3.1 MB',
+          content: {
+            slides: [
+              {
+                tag: 'BÀI THUYẾT TRÌNH MỚI',
+                title: 'Tiêu Đề Thuyết Trình',
+                subtitle: 'Thuyết minh dự án và giải pháp',
+                bullets: ['Ý tưởng thiết kế mới', 'Lộ trình triển khai thực tế'],
+                theme: 'modern-light'
+              }
+            ]
+          }
+        };
+        state.items.unshift(newItem);
+        saveState();
+        renderWorkspace();
+        openFileEditor(newItem.id);
+        showToast('Đã tạo bài thuyết trình PowerPoint mới');
+      });
+
+      document.getElementById('menuNewNote').addEventListener('click', () => {
+        document.getElementById('newItemMenu').classList.add('hidden');
+        const newItem = {
+          id: generateId('note'),
+          name: `Ghi chú Công việc ${state.items.length + 1}.note`,
+          type: 'note',
+          parentId: state.currentNav === 'all' ? state.currentFolderId : 'root',
+          starred: false,
+          updatedAt: formatNow(),
+          size: '80 KB',
+          content: {
+            body: 'Ghi lại các việc quan trọng và mục tiêu cần hoàn thành trong ngày.',
+            tags: ['CongViec', 'GhiChu'],
+            tasks: [
+              { id: 't_init', text: 'Hoàn thành báo cáo công việc', done: false }
+            ]
+          }
+        };
+        state.items.unshift(newItem);
+        saveState();
+        renderWorkspace();
+        openFileEditor(newItem.id);
+        showToast('Đã tạo ghi chú Note chuyên nghiệp');
+      });
+
+      // Quick Doc button inside empty view
+      document.getElementById('emptyCreateDocBtn').addEventListener('click', () => {
+        document.getElementById('menuNewWord').click();
+      });
+
+      // --- UPLOAD FILE SIMULATION / HANDLER ---
+      const uploadModal = document.getElementById('uploadModal');
+      const filePickerInput = document.getElementById('filePickerInput');
+      const dropZone = document.getElementById('dropZone');
+
+      function openUploadModal() {
+        const folder = state.items.find(i => i.id === state.currentFolderId);
+        document.getElementById('uploadTargetFolderText').textContent = folder ? folder.name : 'Trang chủ';
+        uploadModal.classList.remove('hidden');
+      }
+
+      document.getElementById('topUploadBtn').addEventListener('click', openUploadModal);
+      document.getElementById('menuUploadFile').addEventListener('click', () => {
+        document.getElementById('newItemMenu').classList.add('hidden');
+        openUploadModal();
+      });
+      document.getElementById('closeUploadModalBtn').addEventListener('click', () => uploadModal.classList.add('hidden'));
+      document.getElementById('cancelUploadBtn').addEventListener('click', () => uploadModal.classList.add('hidden'));
+
+      dropZone.addEventListener('click', () => filePickerInput.click());
+
+      filePickerInput.addEventListener('change', (e) => {
+        const files = e.target.files;
+        if (!files || files.length === 0) return;
+
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const fileName = file.name;
+          const ext = fileName.split('.').pop().toLowerCase();
+          
+          let fileType = 'word';
+          if (['xls', 'xlsx', 'csv'].includes(ext)) fileType = 'excel';
+          else if (['ppt', 'pptx'].includes(ext)) fileType = 'powerpoint';
+          else if (['txt', 'md', 'note'].includes(ext)) fileType = 'note';
+
+          const sizeKb = (file.size / 1024).toFixed(1);
+          const sizeStr = file.size > 1024 * 1024 ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : `${sizeKb} KB`;
+
+          const uploadedItem = {
+            id: generateId(fileType),
+            name: fileName,
+            type: fileType,
+            parentId: state.currentNav === 'all' ? state.currentFolderId : 'root',
+            starred: false,
+            updatedAt: formatNow(),
+            size: sizeStr,
+            content: fileType === 'note' ? { body: `Tệp đã tải lên: ${fileName}`, tasks: [] } :
+                     fileType === 'excel' ? { headers: ['Cột 1', 'Cột 2'], rows: [['Dữ liệu 1', 'Dữ liệu 2']] } :
+                     fileType === 'powerpoint' ? { slides: [{ title: fileName, bullets: ['Slide tải lên'], theme: 'ocean-blue' }] } :
+                     `<h1>${escapeHtml(fileName)}</h1><p>Nội dung tệp vừa tải lên thành công.</p>`
+          };
+
+          state.items.unshift(uploadedItem);
+        }
+
+        saveState();
+        uploadModal.classList.add('hidden');
+        renderWorkspace();
+        showToast(`Đã tải lên ${files.length} tệp thành công!`);
+        filePickerInput.value = '';
+      });
+
+      // --- SEARCH & SORT CONTROLS ---
+      const searchInput = document.getElementById('searchInput');
+      const clearSearchBtn = document.getElementById('clearSearchBtn');
+
+      searchInput.addEventListener('input', () => {
+        state.searchQuery = searchInput.value;
+        if (state.searchQuery) {
+          clearSearchBtn.classList.remove('hidden');
+        } else {
+          clearSearchBtn.classList.add('hidden');
+        }
+        renderWorkspace();
+      });
+
+      clearSearchBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        state.searchQuery = '';
+        clearSearchBtn.classList.add('hidden');
+        renderWorkspace();
+      });
+
+      document.getElementById('resetFilterBtn').addEventListener('click', () => {
+        searchInput.value = '';
+        state.searchQuery = '';
+        clearSearchBtn.classList.add('hidden');
+        renderWorkspace();
+      });
+
+      // Sort Menu
+      const sortDropdownBtn = document.getElementById('sortDropdownBtn');
+      const sortMenu = document.getElementById('sortMenu');
+      const currentSortLabel = document.getElementById('currentSortLabel');
+
+      sortDropdownBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sortMenu.classList.toggle('hidden');
+      });
+
+      const sortLabels = {
+        updated: 'Mới cập nhật',
+        name_asc: 'Tên (A-Z)',
+        name_desc: 'Tên (Z-A)',
+        size: 'Kích thước'
+      };
+
+      document.querySelectorAll('.sort-option').forEach(opt => {
+        opt.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const sortVal = opt.getAttribute('data-sort');
+          state.sortBy = sortVal;
+          currentSortLabel.textContent = sortLabels[sortVal] || 'Sắp xếp';
+
+          document.querySelectorAll('.sort-option .sort-check').forEach(chk => chk.classList.add('hidden'));
+          opt.querySelector('.sort-check').classList.remove('hidden');
+
+          sortMenu.classList.add('hidden');
+          renderWorkspace();
+        });
+      });
+
+      // View Mode Toggle
+      const viewGridBtn = document.getElementById('viewGridBtn');
+      const viewListBtn = document.getElementById('viewListBtn');
+
+      viewGridBtn.addEventListener('click', () => {
+        state.viewMode = 'grid';
+        viewGridBtn.className = 'p-1.5 rounded-md bg-white text-indigo-600 shadow-sm';
+        viewListBtn.className = 'p-1.5 rounded-md text-slate-500 hover:text-slate-800';
+        renderWorkspace();
+      });
+
+      viewListBtn.addEventListener('click', () => {
+        state.viewMode = 'list';
+        viewListBtn.className = 'p-1.5 rounded-md bg-white text-indigo-600 shadow-sm';
+        viewGridBtn.className = 'p-1.5 rounded-md text-slate-500 hover:text-slate-800';
+        renderWorkspace();
+      });
+
+      // Sidebar Navigation
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const navVal = item.getAttribute('data-nav');
+          state.currentNav = navVal;
+          if (navVal === 'all') state.currentFolderId = 'root';
+
+          document.querySelectorAll('.nav-item').forEach(n => {
+            n.className = 'nav-item w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-xl text-slate-600 hover:bg-slate-100 transition-colors';
+          });
+          item.className = 'nav-item w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-xl text-indigo-700 bg-indigo-50/80 transition-colors';
+
+          // Close mobile sidebar if open
+          closeMobileSidebar();
+          renderWorkspace();
+        });
+      });
+
+      // Brand Logo click resets to root
+      document.getElementById('brandLogoBtn').addEventListener('click', () => {
+        state.currentNav = 'all';
+        state.currentFolderId = 'root';
+        searchInput.value = '';
+        state.searchQuery = '';
+        clearSearchBtn.classList.add('hidden');
+        renderWorkspace();
+      });
+
+      // Mobile Menu Drawer
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+      function openMobileSidebar() {
+        sidebar.classList.remove('-translate-x-full');
+        sidebarBackdrop.classList.remove('hidden');
+      }
+
+      function closeMobileSidebar() {
+        sidebar.classList.add('-translate-x-full');
+        sidebarBackdrop.classList.add('hidden');
+      }
+
+      mobileMenuBtn.addEventListener('click', openMobileSidebar);
+      sidebarBackdrop.addEventListener('click', closeMobileSidebar);
+
+      // New item dropdown toggle
+      const newItemDropdownBtn = document.getElementById('newItemDropdownBtn');
+      const newItemMenu = document.getElementById('newItemMenu');
+
+      newItemDropdownBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        newItemMenu.classList.toggle('hidden');
+      });
+
+      
+      // --- BULLETPROOF DOWNLOAD & EXPORT SYSTEM ---
+      let currentDownloadData = {
+        fileName: '',
+        content: '',
+        mimeType: 'text/plain;charset=utf-8'
+      };
+
+      function openDownloadAssistant(fileName, content, mimeType) {
+        currentDownloadData = { fileName, content, mimeType };
+        document.getElementById('downloadModalFileName').textContent = fileName;
+        document.getElementById('dlContentPreview').textContent = content.slice(0, 1000) + (content.length > 1000 ? '...' : '');
+        document.getElementById('downloadFallbackModal').classList.remove('hidden');
+
+        // Always attempt direct browser download immediately first
+        executeDirectBrowserDownload(fileName, content, mimeType);
+      }
+
+      function executeDirectBrowserDownload(fileName, content, mimeType) {
+        try {
+          const blob = new Blob([content], { type: mimeType });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => {
+            if (a.parentNode) document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }, 3000);
+          showToast(`Đang tải tệp "${fileName}"...`);
+        } catch (err) {
+          console.warn('Direct blob download error:', err);
+          // Fallback via data URI
+          try {
+            const dataUri = 'data:' + mimeType + ',' + encodeURIComponent(content);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = dataUri;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+              if (a.parentNode) document.body.removeChild(a);
+            }, 3000);
+          } catch (e2) {
+            console.warn('Data URI download failed:', e2);
+          }
+        }
+      }
+
+      function downloadItem(id) {
+        const item = state.items.find(i => i.id === id);
+        if (!item) return;
+
+        let fileName = item.name;
+        let content = '';
+        let mimeType = 'text/plain;charset=utf-8';
+
+        if (item.type === 'word') {
+          if (!fileName.toLowerCase().endsWith('.doc') && !fileName.toLowerCase().endsWith('.docx')) {
+            fileName += '.doc';
+          }
+          // Word HTML export (opens natively in Microsoft Word)
+          content = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(item.name)}</title><style>body{font-family: Arial, sans-serif; line-height: 1.6; padding: 20px;} table{border-collapse:collapse;width:100%;} td,th{border:1px solid #ccc;padding:8px;}</style></head><body>${item.content || ''}</body></html>`;
+          mimeType = 'application/msword;charset=utf-8';
+        } else if (item.type === 'excel') {
+          if (!fileName.toLowerCase().endsWith('.csv') && !fileName.toLowerCase().endsWith('.xlsx')) {
+            fileName += '.csv';
+          }
+          // UTF-8 BOM so Excel opens Vietnamese accented characters correctly without garbled symbols!
+          const BOM = '\uFEFF';
+          let csv = '';
+          if (item.content && item.content.headers) {
+            csv += item.content.headers.map(h => `"${(h||'').replace(/"/g, '""')}"`).join(',') + '\n';
+          }
+          if (item.content && item.content.rows) {
+            item.content.rows.forEach(r => {
+              csv += r.map(c => `"${(c||'').replace(/"/g, '""')}"`).join(',') + '\n';
+            });
+          }
+          content = BOM + csv;
+          mimeType = 'text/csv;charset=utf-8';
+        } else if (item.type === 'powerpoint') {
+          if (!fileName.toLowerCase().endsWith('.html') && !fileName.toLowerCase().endsWith('.pptx')) {
+            fileName += '.html';
+          }
+          // Presentation HTML format opens directly in browser or can be imported
+          let slidesHtml = '';
+          if (item.content && item.content.slides) {
+            item.content.slides.forEach((s, idx) => {
+              slidesHtml += `<div style="page-break-after: always; padding: 40px; margin-bottom: 20px; border: 2px solid #ea580c; border-radius: 12px; font-family: sans-serif;">
+                <div style="color: #ea580c; font-weight: bold; font-size: 14px;">SLIDE ${idx+1}: ${(s.tag||'')}</div>
+                <h1 style="color: #1e293b; margin: 10px 0;">${escapeHtml(s.title||'')}</h1>
+                <p style="color: #64748b; font-size: 18px;">${escapeHtml(s.subtitle||'')}</p>
+                <ul style="margin-top: 20px; font-size: 16px; line-height: 1.8;">
+                  ${(s.bullets||[]).map(b => `<li>${escapeHtml(b)}</li>`).join('')}
+                </ul>
+              </div>`;
+            });
+          }
+          content = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(item.name)}</title></head><body>${slidesHtml}</body></html>`;
+          mimeType = 'text/html;charset=utf-8';
+        } else if (item.type === 'note') {
+          if (!fileName.toLowerCase().endsWith('.txt') && !fileName.toLowerCase().endsWith('.note')) {
+            fileName += '.txt';
+          }
+          let noteTxt = `GHI CHÚ: ${item.name}\nThời gian: ${item.updatedAt}\n${'='.repeat(40)}\n\n`;
+          if (item.content) {
+            noteTxt += `Nội dung:\n${item.content.body || ''}\n\n`;
+            if (item.content.tasks && item.content.tasks.length > 0) {
+              noteTxt += `Việc cần làm:\n`;
+              item.content.tasks.forEach(t => {
+                noteTxt += `[${t.done ? 'x' : ' '}] ${t.text}\n`;
+              });
+            }
+          }
+          content = noteTxt;
+          mimeType = 'text/plain;charset=utf-8';
+        } else {
+          content = typeof item.content === 'string' ? item.content : JSON.stringify(item.content, null, 2);
+        }
+
+        openDownloadAssistant(fileName, content, mimeType);
+      }
+
+      // Download Fallback Modal Actions
+      document.getElementById('closeDownloadModalBtn').addEventListener('click', () => {
+        document.getElementById('downloadFallbackModal').classList.add('hidden');
+      });
+      document.getElementById('finishDownloadModalBtn').addEventListener('click', () => {
+        document.getElementById('downloadFallbackModal').classList.add('hidden');
+      });
+
+      // 1. Retry direct download
+      document.getElementById('dlRetryDirectBtn').addEventListener('click', () => {
+        executeDirectBrowserDownload(currentDownloadData.fileName, currentDownloadData.content, currentDownloadData.mimeType);
+      });
+
+      // 2. Open in New Tab (Bypasses iframe sandbox download restriction)
+      document.getElementById('dlOpenNewTabBtn').addEventListener('click', () => {
+        try {
+          const blob = new Blob([currentDownloadData.content], { type: currentDownloadData.mimeType });
+          const url = URL.createObjectURL(blob);
+          const win = window.open(url, '_blank');
+          if (!win) {
+            showToast('Trình duyệt đang chặn cửa sổ bật lên. Vui lòng bật quyền pop-up!', 'warning');
+          } else {
+            showToast('Đã mở trong Tab mới. Bạn có thể nhấn Ctrl+S để lưu tệp!');
+          }
+        } catch (e) {
+          showToast('Không thể mở tab mới trong môi trường này', 'error');
+        }
+      });
+
+      // 3. Copy content
+      document.getElementById('dlCopyContentBtn').addEventListener('click', () => {
+        copyToClipboard(currentDownloadData.content, `Đã sao chép toàn bộ nội dung "${currentDownloadData.fileName}"!`);
+      });
+
+      // 4. Print / Save as PDF
+      document.getElementById('dlPrintPdfBtn').addEventListener('click', () => {
+        const printWindow = window.open('', '_blank');
+        if (printWindow) {
+          printWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="utf-8">
+              <title>${escapeHtml(currentDownloadData.fileName)}</title>
+              <style>
+                body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 40px; color: #1e293b; line-height: 1.6; }
+                h1, h2, h3 { color: #0f172a; }
+                table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+                th, td { border: 1px solid #cbd5e1; padding: 8px 12px; text-align: left; }
+                th { background-color: #f1f5f9; }
+              </style>
+            </head>
+            <body>
+              <h2>${escapeHtml(currentDownloadData.fileName)}</h2>
+              <hr style="border: 0; border-top: 1px solid #e2e8f0; margin-bottom: 20px;">
+              <div>${currentDownloadData.content}</div>
+            </body>
+            </html>
+          `);
+          printWindow.document.close();
+          printWindow.focus();
+          setTimeout(() => {
+            printWindow.print();
+          }, 300);
+        } else {
+          window.print();
+        }
+      });
+
+      // Top Backup All Button
+      document.getElementById('topBackupBtn').addEventListener('click', () => {
+        const backupJson = JSON.stringify(state.items, null, 2);
+        const fileName = `DocuSpace_SaoLuu_${formatNow().replace(/[/ :]/g, '_')}.json`;
+        openDownloadAssistant(fileName, backupJson, 'application/json;charset=utf-8');
+      });
+
+      // PowerPoint Editor Download Button
+      document.getElementById('pptDownloadBtn').addEventListener('click', () => {
+        savePptDoc();
+        if (state.activeEditingId) {
+          downloadItem(state.activeEditingId);
+        }
+      });
+
+      // Note Editor Download Button
+      document.getElementById('noteDownloadBtn').addEventListener('click', () => {
+        saveNoteDoc();
+        if (state.activeEditingId) {
+          downloadItem(state.activeEditingId);
+        }
+      });
+
+      // --- INITIALIZE APP ---
+      loadState();
+      renderWorkspace();
+      updateStorageMeter();
+      showToast('Chào mừng bạn đến với DocuSpace Pro!');
+
+    })();
+  </script>
+</body>
+</html>
