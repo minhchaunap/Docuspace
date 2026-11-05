@@ -1,22 +1,20 @@
-# 📁 DocuSpace Pro - Hệ Thống Lưu Trữ, Quản Lý Tài Liệu & AI Copilot
+# 📁 DocuSpace Pro - Hệ Thống Quản Lý Tài Liệu & AI Copilot
 
-Phiên bản nâng cấp toàn diện tích hợp:
-- **Tải ảnh và quản lý trong từng folder con / folder lớn**: Xem ảnh phóng to, xoay ảnh, đổi tên từng ảnh.
-- **Đổi tên hàng loạt (Batch Rename)**: Đổi tên theo mẫu số thứ tự, tìm & thay thế từ, thêm tiền tố/hậu tố với bảng xem trước trực quan.
-- **Chế độ Chọn hàng loạt (Multi-select)**: Bật/tắt chọn nhiều mục, chọn tất cả, di chuyển, xoá hàng loạt.
-- **Nén & Xuất file ZIP chuẩn**: Xuất các file đã chọn hoặc toàn bộ thư mục thành tệp `.zip` trực tiếp bằng JSZip.
-- **Trợ lý AI DocuAI Copilot (như ChatGPT)**:
-  - 🔍 Đọc chữ trong ảnh (OCR trích xuất hóa đơn, tài liệu).
-  - 🏷️ Gợi ý tên thông minh cho ảnh.
-  - 🗜️ Nén ảnh giảm ~60% dung lượng bằng Canvas.
-  - 🎨 Đóng dấu bản quyền (Watermark).
-  - 💬 Chat tự do yêu cầu AI dịch thuật, tóm tắt, giải thích.
-- **Trọn bộ văn phòng**: Word (.docx), Excel (.xlsx tính tổng SUM/AVERAGE), PowerPoint (.pptx trình chiếu Fullscreen), Note chuyên nghiệp.
-- **Chia sẻ đa kênh**: Zalo Chat, Gmail, Google Drive, Web Share API.
+Phiên bản mới nhất nâng cấp:
+- 🌐 **Nút chuyển đổi Ngôn ngữ [ 🇻🇳 Tiếng Việt | 🇬🇧 English ]** ngay đầu website: Hỗ trợ người nước ngoài sử dụng trọn vẹn mọi tính năng.
+- ⚡ **Thanh Tạo Nhanh trong MỌI Thư Mục (Folder Quick Action Bar)**:
+  - 📁 **+ Thư mục mới**: Tạo folder con trực tiếp tại bất kỳ cấp thư mục nào.
+  - 📄 **+ Word (.docx)**: Tạo văn bản Word với 1 chạm.
+  - 📊 **+ Excel (.xlsx)**: Tạo bảng tính Excel với 1 chạm.
+  - 📽️ **+ PowerPoint (.pptx)**: Tạo bài thuyết trình slide với 1 chạm.
+  - 📝 **+ Note**: Tạo ghi chú công việc to-do.
+  - 📷 **Tải ảnh**: Tải ảnh vào đúng thư mục đang xem.
+- 🖼️ **Tải & Đổi tên ảnh linh hoạt**: Đổi tên từng ảnh hoặc đổi tên hàng loạt (Batch Rename).
+- 📦 **Nén & Xuất file ZIP**: Xuất tệp đã chọn hoặc toàn bộ thư mục thành file ZIP bằng JSZip.
+- 🤖 **Trợ lý DocuAI Copilot**: Đọc chữ OCR, gợi ý tên ảnh, nén ảnh, đóng dấu Watermark, chat như ChatGPT.
 
 ## 🚀 Cập nhật lên GitHub Pages của bạn:
-1. Vào repository của bạn: [https://github.com/minhchaunap/Docuspace](https://github.com/minhchaunap/Docuspace)
-2. Bấm nút **Add file** -> **Upload files**.
-3. Kéo thả tệp `index.html` (trong tệp zip tải về) đè lên bản cũ -> Bấm **Commit changes**.
-4. Website trực tuyến sẽ tự động cập nhật ngay tại:
-   👉 **https://minhchaunap.github.io/Docuspace/**
+1. Mở trang kho lưu trữ của bạn: [https://github.com/minhchaunap/Docuspace/upload/main](https://github.com/minhchaunap/Docuspace/upload/main)
+2. Kéo thả tệp `index.html` (trong tệp zip tải về) vào để ghi đè phiên bản cũ.
+3. Bấm **Commit changes**.
+4. Website trực tuyến của bạn tại **https://minhchaunap.github.io/Docuspace/** sẽ tự động cập nhật ngay lập tức!

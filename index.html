@@ -114,6 +114,16 @@
       <!-- Quick Upload Button -->
       
       <!-- DocuAI Copilot Button -->
+      
+      <!-- Language Switcher: Vietnamese / English -->
+      <div class="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200/80 text-xs font-bold mr-1">
+        <button id="langViBtn" class="px-2 py-1 rounded-lg bg-white text-indigo-700 shadow-sm transition-all flex items-center gap-1" title="Chuyển sang Tiếng Việt">
+          <span>🇻🇳</span> <span class="hidden sm:inline">Tiếng Việt</span><span class="sm:hidden">VN</span>
+        </button>
+        <button id="langEnBtn" class="px-2 py-1 rounded-lg text-slate-500 hover:text-slate-800 transition-all flex items-center gap-1" title="Switch to English">
+          <span>🇬🇧</span> <span class="hidden sm:inline">English</span><span class="sm:hidden">EN</span>
+        </button>
+      </div>
       <button id="topAiBtn" class="flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold shadow-sm transition-all animate-pulse hover:animate-none">
         <svg class="w-4 h-4 text-amber-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 011.342 1.342l-.8 1.6 1.581 3.953H20a1 1 0 010 2h-1.324l-1.581 3.953.8 1.6a1 1 0 01-1.342 1.342l-1.6-.8L11 19.677V21a1 1 0 11-2 0v-1.323l-3.954-1.582-1.599.8a1 1 0 01-1.342-1.342l.8-1.6L1.324 13H0a1 1 0 010-2h1.324l1.581-3.953-.8-1.6a1 1 0 011.342-1.342l1.6.8L9 4.323V3a1 1 0 011-1zm0 5a5 5 0 100 10 5 5 0 000-10z"/></svg>
         <span class="hidden md:inline">DocuAI Trợ lý</span>
@@ -448,6 +458,49 @@
         </div>
 
         <!-- Section: Folders (if any) -->
+        
+        <!-- FOLDER QUICK ACTION BAR (Available in EVERY folder for 1-tap creation) -->
+        <div id="folderQuickActionBar" class="mb-5 p-2 sm:p-2.5 bg-white rounded-2xl border border-slate-200/90 shadow-sm flex items-center justify-between gap-2 overflow-x-auto">
+          <div class="flex items-center gap-1.5 flex-nowrap">
+            <span class="text-[11px] uppercase font-bold text-slate-400 px-2 tracking-wider hidden md:inline" id="quickBarLabel">Tạo nhanh:</span>
+            
+            <!-- 1. Tạo Thư Mục Mới -->
+            <button id="quickAddFolderBtn" class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-xl text-xs font-bold border border-amber-200/80 transition-all flex-shrink-0 active:scale-95 shadow-sm">
+              <svg class="w-4 h-4 text-amber-600" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
+              <span id="quickFolderText">+ Thư mục mới</span>
+            </button>
+
+            <!-- 2. Tạo Word (.docx) -->
+            <button id="quickAddWordBtn" class="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl text-xs font-bold border border-blue-200/80 transition-all flex-shrink-0 active:scale-95 shadow-sm">
+              <span class="w-4 h-4 rounded bg-blue-600 text-white flex items-center justify-center font-bold text-[10px]">W</span>
+              <span id="quickWordText">+ Word</span>
+            </button>
+
+            <!-- 3. Tạo Excel (.xlsx) -->
+            <button id="quickAddExcelBtn" class="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-xl text-xs font-bold border border-emerald-200/80 transition-all flex-shrink-0 active:scale-95 shadow-sm">
+              <span class="w-4 h-4 rounded bg-emerald-600 text-white flex items-center justify-center font-bold text-[10px]">X</span>
+              <span id="quickExcelText">+ Excel</span>
+            </button>
+
+            <!-- 4. Tạo PowerPoint (.pptx) -->
+            <button id="quickAddPptBtn" class="flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-xl text-xs font-bold border border-orange-200/80 transition-all flex-shrink-0 active:scale-95 shadow-sm">
+              <span class="w-4 h-4 rounded bg-orange-600 text-white flex items-center justify-center font-bold text-[10px]">P</span>
+              <span id="quickPptText">+ PowerPoint</span>
+            </button>
+
+            <!-- 5. Tạo Ghi chú Note -->
+            <button id="quickAddNoteBtn" class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-xl text-xs font-bold border border-amber-200/80 transition-all flex-shrink-0 active:scale-95 shadow-sm">
+              <span class="w-4 h-4 rounded bg-amber-500 text-white flex items-center justify-center font-bold text-[10px]">N</span>
+              <span id="quickNoteText">+ Note</span>
+            </button>
+
+            <!-- 6. Tải ảnh nhanh -->
+            <button id="quickAddPhotoBtn" class="flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-xl text-xs font-bold border border-purple-200/80 transition-all flex-shrink-0 active:scale-95 shadow-sm">
+              <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <span id="quickPhotoText">Tải ảnh</span>
+            </button>
+          </div>
+        </div>
         <div id="foldersSection" class="mb-6">
           <div class="flex items-center justify-between mb-3">
             <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
@@ -4994,6 +5047,185 @@
           showToast('Đã áp dụng Watermark bản quyền vào ảnh!');
         }
       };
+
+      
+      // ==================== FOLDER QUICK ACTION BAR BINDINGS ====================
+      // Allows 1-tap creation of Folder, Word, Excel, PowerPoint, Note, Image in ANY folder
+      document.getElementById('quickAddFolderBtn').addEventListener('click', openNewFolderModal);
+      document.getElementById('quickAddWordBtn').addEventListener('click', () => {
+        document.getElementById('menuNewWord').click();
+      });
+      document.getElementById('quickAddExcelBtn').addEventListener('click', () => {
+        document.getElementById('menuNewExcel').click();
+      });
+      document.getElementById('quickAddPptBtn').addEventListener('click', () => {
+        document.getElementById('menuNewPPT').click();
+      });
+      document.getElementById('quickAddNoteBtn').addEventListener('click', () => {
+        document.getElementById('menuNewNote').click();
+      });
+      document.getElementById('quickAddPhotoBtn').addEventListener('click', () => {
+        document.getElementById('uploadImagesBtn').click();
+      });
+
+      // ==================== BILINGUAL LANGUAGE SWITCHER (VI / EN) ====================
+      const I18N = {
+        vi: {
+          brandSubtitle: 'Lưu trữ & Quản lý Tài liệu Đa năng',
+          searchPlaceholder: 'Tìm kiếm tài liệu, thư mục, ghi chú, thẻ tag...',
+          syncBadge: 'Đã đồng bộ Drive & Cloud',
+          topBackup: 'Sao lưu dữ liệu',
+          topUpload: 'Tải tệp lên',
+          topAi: 'DocuAI Trợ lý',
+          newDropdown: 'Tạo mới & Thêm',
+          storageCategory: 'Kho lưu trữ',
+          allDocs: 'Tất cả tài liệu',
+          starred: 'Đã gắn dấu sao',
+          recent: 'Mở gần đây',
+          trash: 'Thùng rác',
+          filterCategory: 'Phân loại tệp',
+          typeWord: 'Tài liệu Word',
+          typeExcel: 'Bảng tính Excel',
+          typePpt: 'PowerPoint Slide',
+          typeNote: 'Ghi chú Note',
+          typeImage: 'Hình ảnh & Ảnh chụp',
+          storageUsedLabel: 'Dung lượng sử dụng',
+          storageMaxLabel: '15 GB tối đa',
+          quickBarLabel: 'Tạo nhanh:',
+          quickFolderText: '+ Thư mục mới',
+          quickWordText: '+ Word',
+          quickExcelText: '+ Excel',
+          quickPptText: '+ PowerPoint',
+          quickNoteText: '+ Note',
+          quickPhotoText: 'Tải ảnh',
+          emptyTrashText: 'Dọn sạch thùng rác',
+          bulkSelectText: 'Chọn hàng loạt',
+          exportFolderZipText: 'Xuất Folder .ZIP',
+          folderCountLabel: 'Thư mục',
+          fileCountLabel: 'Tài liệu & Tệp',
+          emptyFolderTitle: 'Thư mục này chưa có tệp nào',
+          emptyFolderSubtitle: 'Bạn có thể tạo tài liệu Word, Excel, PowerPoint, Note hoặc tải tệp lên từ máy tính.',
+          newFolderModalTitle: 'Tạo thư mục mới',
+          newFolderNameLabel: 'Tên thư mục',
+          newFolderColorLabel: 'Màu sắc đánh dấu',
+          cancelBtnText: 'Huỷ',
+          createFolderBtnText: 'Tạo thư mục',
+          toastSwitchedLang: 'Đã chuyển sang Tiếng Việt 🇻🇳'
+        },
+        en: {
+          brandSubtitle: 'Smart Workspace & Document Storage',
+          searchPlaceholder: 'Search documents, folders, notes, tags...',
+          syncBadge: 'Drive & Cloud Synced',
+          topBackup: 'Backup Data',
+          topUpload: 'Upload File',
+          topAi: 'DocuAI Copilot',
+          newDropdown: 'New & Create',
+          storageCategory: 'Storage',
+          allDocs: 'All Documents',
+          starred: 'Starred',
+          recent: 'Recent',
+          trash: 'Trash',
+          filterCategory: 'File Categories',
+          typeWord: 'Word Documents',
+          typeExcel: 'Excel Spreadsheets',
+          typePpt: 'PowerPoint Slides',
+          typeNote: 'Notes & Tasks',
+          typeImage: 'Images & Photos',
+          storageUsedLabel: 'Storage Used',
+          storageMaxLabel: '15 GB max',
+          quickBarLabel: 'Quick Create:',
+          quickFolderText: '+ New Folder',
+          quickWordText: '+ Word',
+          quickExcelText: '+ Excel',
+          quickPptText: '+ PowerPoint',
+          quickNoteText: '+ Note',
+          quickPhotoText: 'Upload Photos',
+          emptyTrashText: 'Empty Trash',
+          bulkSelectText: 'Bulk Select',
+          exportFolderZipText: 'Export Folder .ZIP',
+          folderCountLabel: 'Folders',
+          fileCountLabel: 'Files & Docs',
+          emptyFolderTitle: 'This folder is empty',
+          emptyFolderSubtitle: 'You can create Word, Excel, PowerPoint, Notes or upload files/photos.',
+          newFolderModalTitle: 'Create New Folder',
+          newFolderNameLabel: 'Folder Name',
+          newFolderColorLabel: 'Tag Color',
+          cancelBtnText: 'Cancel',
+          createFolderBtnText: 'Create Folder',
+          toastSwitchedLang: 'Switched to English 🇬🇧'
+        }
+      };
+
+      state.lang = 'vi';
+      try {
+        const savedLang = localStorage.getItem('docuspace_lang');
+        if (savedLang === 'en' || savedLang === 'vi') {
+          state.lang = savedLang;
+        }
+      } catch (e) {}
+
+      function updateLanguageUI() {
+        const dict = I18N[state.lang] || I18N.vi;
+
+        // Header
+        const searchInp = document.getElementById('searchInput');
+        if (searchInp) searchInp.placeholder = dict.searchPlaceholder;
+
+        const syncBadge = document.querySelector('header .bg-emerald-50 span.font-medium');
+        if (syncBadge) syncBadge.textContent = dict.syncBadge;
+
+        // Quick action bar texts
+        const qbLabel = document.getElementById('quickBarLabel');
+        if (qbLabel) qbLabel.textContent = dict.quickBarLabel;
+
+        const qfText = document.getElementById('quickFolderText');
+        if (qfText) qfText.textContent = dict.quickFolderText;
+
+        const qwText = document.getElementById('quickWordText');
+        if (qwText) qwText.textContent = dict.quickWordText;
+
+        const qeText = document.getElementById('quickExcelText');
+        if (qeText) qeText.textContent = dict.quickExcelText;
+
+        const qpText = document.getElementById('quickPptText');
+        if (qpText) qpText.textContent = dict.quickPptText;
+
+        const qnText = document.getElementById('quickNoteText');
+        if (qnText) qnText.textContent = dict.quickNoteText;
+
+        const qphText = document.getElementById('quickPhotoText');
+        if (qphText) qphText.textContent = dict.quickPhotoText;
+
+        // Active button styles on language toggle
+        const langViBtn = document.getElementById('langViBtn');
+        const langEnBtn = document.getElementById('langEnBtn');
+        if (state.lang === 'vi') {
+          langViBtn.className = 'px-2 py-1 rounded-lg bg-white text-indigo-700 shadow-sm transition-all flex items-center gap-1';
+          langEnBtn.className = 'px-2 py-1 rounded-lg text-slate-500 hover:text-slate-800 transition-all flex items-center gap-1';
+        } else {
+          langEnBtn.className = 'px-2 py-1 rounded-lg bg-white text-indigo-700 shadow-sm transition-all flex items-center gap-1';
+          langViBtn.className = 'px-2 py-1 rounded-lg text-slate-500 hover:text-slate-800 transition-all flex items-center gap-1';
+        }
+
+        renderBreadcrumbs();
+      }
+
+      function setLanguage(newLang) {
+        if (newLang !== 'vi' && newLang !== 'en') return;
+        state.lang = newLang;
+        try {
+          localStorage.setItem('docuspace_lang', newLang);
+        } catch (e) {}
+        updateLanguageUI();
+        renderWorkspace();
+        showToast(I18N[state.lang].toastSwitchedLang);
+      }
+
+      document.getElementById('langViBtn').addEventListener('click', () => setLanguage('vi'));
+      document.getElementById('langEnBtn').addEventListener('click', () => setLanguage('en'));
+
+      // Apply saved language on load
+      setTimeout(() => updateLanguageUI(), 10);
 
       // --- INITIALIZE APP ---
       loadState();
