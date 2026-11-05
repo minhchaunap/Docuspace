@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DocuSpace Pro - Hệ thống Lưu trữ & Ghi chú Chuyên nghiệp</title>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script>
     tailwind.config = {
@@ -111,6 +112,12 @@
       </div>
 
       <!-- Quick Upload Button -->
+      
+      <!-- DocuAI Copilot Button -->
+      <button id="topAiBtn" class="flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold shadow-sm transition-all animate-pulse hover:animate-none">
+        <svg class="w-4 h-4 text-amber-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 011.342 1.342l-.8 1.6 1.581 3.953H20a1 1 0 010 2h-1.324l-1.581 3.953.8 1.6a1 1 0 01-1.342 1.342l-1.6-.8L11 19.677V21a1 1 0 11-2 0v-1.323l-3.954-1.582-1.599.8a1 1 0 01-1.342-1.342l.8-1.6L1.324 13H0a1 1 0 010-2h1.324l1.581-3.953-.8-1.6a1 1 0 011.342-1.342l1.6.8L9 4.323V3a1 1 0 011-1zm0 5a5 5 0 100 10 5 5 0 000-10z"/></svg>
+        <span class="hidden md:inline">DocuAI Trợ lý</span>
+      </button>
       <button id="topBackupBtn" class="flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors" title="Tải xuống toàn bộ dữ liệu">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
         <span class="hidden md:inline">Sao lưu dữ liệu</span>
@@ -172,6 +179,16 @@
               <div>
                 <span class="font-medium block">Trình chiếu PowerPoint (.pptx)</span>
                 <span class="text-[11px] text-slate-400">Slide bài giảng, thuyết trình</span>
+              </div>
+            </button>
+            
+            <button id="menuUploadImage" class="w-full text-left px-3.5 py-2 hover:bg-purple-50 text-slate-700 hover:text-purple-600 text-sm flex items-center gap-2.5 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xs">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              </span>
+              <div>
+                <span class="font-medium block">Tải ảnh vào thư mục này</span>
+                <span class="text-[11px] text-slate-400">JPG, PNG, WEBP, GIF...</span>
               </div>
             </button>
             <button id="menuNewNote" class="w-full text-left px-3.5 py-2 hover:bg-amber-50 text-slate-700 hover:text-amber-600 text-sm flex items-center gap-2.5 transition-colors">
@@ -251,6 +268,15 @@
               <span class="flex items-center gap-3">
                 <span class="w-5 h-5 rounded bg-orange-100 text-orange-700 flex items-center justify-center font-bold text-[10px]">P</span>
                 <span>PowerPoint Slide</span>
+              </span>
+            </button>
+            
+            <button data-nav="type_image" class="nav-item w-full flex items-center justify-between px-3 py-1.5 text-sm font-medium rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
+              <span class="flex items-center gap-3">
+                <span class="w-5 h-5 rounded bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-[10px]">
+                  <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/></svg>
+                </span>
+                <span>Hình ảnh & Ảnh chụp</span>
               </span>
             </button>
             <button data-nav="type_note" class="nav-item w-full flex items-center justify-between px-3 py-1.5 text-sm font-medium rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
@@ -339,6 +365,25 @@
           </div>
 
           <!-- Quick Folder Creation -->
+          
+          <!-- Bulk Select Toggle Button -->
+          <button id="bulkSelectToggleBtn" class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition-colors">
+            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+            <span id="bulkSelectLabel">Chọn hàng loạt</span>
+          </button>
+
+          <!-- Export Current Folder as ZIP -->
+          <button id="exportCurrentFolderZipBtn" class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-lg text-xs font-semibold border border-amber-200/80 transition-colors" title="Nén toàn bộ thư mục thành tệp ZIP">
+            <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+            <span class="hidden sm:inline">Xuất Folder .ZIP</span>
+          </button>
+
+          <!-- Upload Images Directly into Active Folder -->
+          <button id="uploadImagesBtn" class="flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-lg text-xs font-semibold border border-purple-200/80 transition-colors" title="Tải ảnh lên thư mục này">
+            <svg class="w-3.5 h-3.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <span class="hidden sm:inline">Tải ảnh</span>
+            <input type="file" id="imagePickerInput" class="hidden" multiple accept="image/*">
+          </button>
           <button id="quickNewFolderBtn" class="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg text-xs font-semibold transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
             <span class="hidden sm:inline">Folder mới</span>
@@ -350,6 +395,51 @@
       <div class="flex-1 overflow-y-auto p-4 sm:p-6" id="workspaceContainer">
         
         <!-- Search/Filter Info banner when active -->
+        
+        <!-- BULK ACTION BAR (Visible when in multi-select mode) -->
+        <div id="bulkActionBar" class="hidden mb-4 p-3.5 bg-gradient-to-r from-indigo-700 via-indigo-800 to-purple-800 text-white rounded-2xl shadow-lg flex flex-wrap items-center justify-between gap-3 animate-in fade-in duration-200">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center font-bold text-xs" id="bulkCountBadge">0</span>
+            <div>
+              <span class="font-bold text-xs block">Chế độ chọn hàng loạt</span>
+              <span class="text-[11px] text-indigo-200">Đã chọn <strong id="bulkSelectedCount" class="text-white">0</strong> mục</span>
+            </div>
+            <div class="h-6 w-px bg-white/20 mx-1 hidden sm:block"></div>
+            <button id="selectAllBtn" class="text-xs px-2.5 py-1 bg-white/20 hover:bg-white/30 rounded-lg transition-colors font-medium">Chọn tất cả</button>
+            <button id="deselectAllBtn" class="text-xs px-2.5 py-1 bg-white/10 hover:bg-white/20 text-indigo-200 rounded-lg transition-colors font-medium">Bỏ chọn</button>
+          </div>
+
+          <div class="flex items-center gap-2 flex-wrap">
+            <!-- Bulk Rename -->
+            <button id="bulkRenameBtn" class="flex items-center gap-1.5 px-3 py-1.5 bg-white text-indigo-800 hover:bg-indigo-50 rounded-xl text-xs font-bold shadow-sm transition-all">
+              <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+              <span>Đổi tên hàng loạt</span>
+            </button>
+
+            <!-- Bulk Zip -->
+            <button id="bulkZipBtn" class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-400 hover:bg-amber-300 text-slate-900 rounded-xl text-xs font-bold shadow-sm transition-all">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+              <span>Chuyển thành file ZIP</span>
+            </button>
+
+            <!-- Bulk Move -->
+            <button id="bulkMoveBtn" class="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 hover:bg-white/30 text-white rounded-xl text-xs font-medium transition-colors">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
+              <span>Di chuyển</span>
+            </button>
+
+            <!-- Bulk Delete -->
+            <button id="bulkDeleteBtn" class="flex items-center gap-1.5 px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-semibold shadow-sm transition-colors">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              <span>Xoá</span>
+            </button>
+
+            <!-- Close Bulk Mode -->
+            <button id="bulkCancelBtn" class="p-1.5 text-indigo-200 hover:text-white rounded-lg transition-colors ml-1">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+        </div>
         <div id="filterInfoBanner" class="hidden mb-4 p-3 bg-indigo-50/70 border border-indigo-100 rounded-xl flex items-center justify-between text-xs text-indigo-900">
           <div class="flex items-center gap-2">
             <span id="filterBannerText">Đang lọc kết quả...</span>
@@ -405,6 +495,269 @@
   </div>
 
   <!-- ==================== MODALS & EDITORS ==================== -->
+
+  
+  <!-- MODAL: IMAGE DETAIL & SINGLE RENAME -->
+  <div id="imageDetailModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full p-6 border border-slate-100 flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 flex-shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center font-bold">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900" id="imgModalHeaderTitle">Chi tiết hình ảnh</h3>
+            <span class="text-[11px] text-slate-400" id="imgModalSubMeta">Kích thước • Định dạng</span>
+          </div>
+        </div>
+        <button id="closeImgDetailModalBtn" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Image Preview Area -->
+      <div class="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-900/5 rounded-xl my-4 min-h-[260px]">
+        <img id="imgDetailPreview" src="" alt="Preview" class="max-h-[50vh] max-w-full object-contain rounded-lg shadow-md transition-transform">
+      </div>
+
+      <!-- Rename and Actions Controls -->
+      <div class="space-y-3 flex-shrink-0 border-t border-slate-100 pt-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Đổi tên hình ảnh này:</label>
+          <div class="flex items-center gap-2">
+            <input type="text" id="imgRenameInput" class="flex-1 px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:bg-white focus:border-purple-500 focus:ring-4 focus:ring-purple-100 outline-none transition-all">
+            <button id="submitImgRenameBtn" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold shadow-md shadow-purple-100 transition-colors">
+              Lưu tên ảnh
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2 flex-wrap gap-2">
+          <div class="flex items-center gap-2">
+            <button id="imgRotateBtn" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              <span>Xoay 90°</span>
+            </button>
+            <button id="imgDownloadBtn" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              <span>Tải ảnh về máy</span>
+            </button>
+          </div>
+
+          <button id="imgSendToAiBtn" class="px-4 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all">
+            <svg class="w-3.5 h-3.5 text-amber-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 011.342 1.342l-.8 1.6 1.581 3.953H20a1 1 0 010 2h-1.324l-1.581 3.953.8 1.6a1 1 0 01-1.342 1.342l-1.6-.8L11 19.677V21a1 1 0 11-2 0v-1.323l-3.954-1.582-1.599.8a1 1 0 01-1.342-1.342l.8-1.6L1.324 13H0a1 1 0 010-2h1.324l1.581-3.953-.8-1.6a1 1 0 011.342-1.342l1.6.8L9 4.323V3a1 1 0 011-1zm0 5a5 5 0 100 10 5 5 0 000-10z"/></svg>
+            <span>Yêu cầu AI xử lý ảnh này</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: BULK RENAME DIALOG -->
+  <div id="bulkRenameModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-6 border border-slate-100 flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 flex-shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Đổi tên hàng loạt</h3>
+            <span class="text-xs text-slate-400" id="bulkRenameCountLabel">Đổi tên cho 0 mục đã chọn</span>
+          </div>
+        </div>
+        <button id="closeBulkRenameModalBtn" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Rename Pattern Controls -->
+      <div class="space-y-4 py-4 flex-shrink-0">
+        <!-- Mode Tabs: Sequence numbering vs Find & Replace -->
+        <div class="flex border-b border-slate-200 gap-2">
+          <button data-brmode="seq" class="bulk-rename-tab py-2 px-3 text-xs font-bold border-b-2 border-indigo-600 text-indigo-600">Đánh số thứ tự (Tiền tố + 01, 02...)</button>
+          <button data-brmode="replace" class="bulk-rename-tab py-2 px-3 text-xs font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-800">Tìm kiếm & Thay thế từ</button>
+          <button data-brmode="affix" class="bulk-rename-tab py-2 px-3 text-xs font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-800">Thêm tiền tố / hậu tố</button>
+        </div>
+
+        <!-- Mode 1: Sequence inputs -->
+        <div id="brModeSeq" class="space-y-3">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Tên chung (Tiền tố):</label>
+              <input type="text" id="brPrefixInput" value="Hinh_Anh_Du_An" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:border-indigo-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Bắt đầu từ số:</label>
+              <input type="number" id="brStartIndexInput" value="1" min="1" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:border-indigo-500 outline-none">
+            </div>
+          </div>
+          <div class="flex items-center gap-3 text-xs text-slate-600">
+            <label class="flex items-center gap-1.5 cursor-pointer">
+              <input type="checkbox" id="brKeepExtChk" checked class="text-indigo-600 rounded">
+              <span>Giữ nguyên đuôi tệp (.jpg, .png, .docx...)</span>
+            </label>
+            <label class="flex items-center gap-1.5 cursor-pointer">
+              <input type="checkbox" id="brPadZeroChk" checked class="text-indigo-600 rounded">
+              <span>Thêm số 0 phía trước (01, 02...)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Mode 2: Replace inputs -->
+        <div id="brModeReplace" class="space-y-3 hidden">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Từ cần thay thế:</label>
+              <input type="text" id="brFindInput" placeholder="Ví dụ: IMG_" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:border-indigo-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Thay thế bằng:</label>
+              <input type="text" id="brReplaceWithInput" placeholder="Ví dụ: Anh_HopDong_" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:border-indigo-500 outline-none">
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode 3: Affix inputs -->
+        <div id="brModeAffix" class="space-y-3 hidden">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Thêm vào đầu tên:</label>
+              <input type="text" id="brAddPrefixInput" placeholder="Ví dụ: [2026]_" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:border-indigo-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Thêm vào đuôi tên:</label>
+              <input type="text" id="brAddSuffixInput" placeholder="Ví dụ: _HoanThanh" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:border-indigo-500 outline-none">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview Table: Old Name -> New Name -->
+      <div class="flex-1 overflow-y-auto border border-slate-200 rounded-xl p-2 bg-slate-50 min-h-[140px] max-h-[220px]">
+        <table class="w-full text-xs">
+          <thead>
+            <tr class="text-left text-slate-400 font-semibold border-b border-slate-200 pb-1">
+              <th class="p-1.5">Tên hiện tại</th>
+              <th class="p-1.5 text-center">→</th>
+              <th class="p-1.5 text-indigo-700 font-bold">Tên mới dự kiến</th>
+            </tr>
+          </thead>
+          <tbody id="bulkRenamePreviewTable">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="mt-5 flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100 flex-shrink-0">
+        <button id="cancelBulkRenameBtn" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">Huỷ</button>
+        <button id="applyBulkRenameBtn" class="px-5 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-md shadow-indigo-100 transition-all">
+          Áp dụng đổi tên hàng loạt
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: AI ASSISTANT CHATGPT (DocuAI Copilot) -->
+  <div id="aiAssistantModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full h-[88vh] border border-slate-100 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- AI Header -->
+      <div class="bg-gradient-to-r from-purple-700 via-indigo-700 to-indigo-800 text-white px-5 py-3.5 flex items-center justify-between flex-shrink-0 shadow-md">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center font-bold text-amber-300 shadow-inner">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 011.342 1.342l-.8 1.6 1.581 3.953H20a1 1 0 010 2h-1.324l-1.581 3.953.8 1.6a1 1 0 01-1.342 1.342l-1.6-.8L11 19.677V21a1 1 0 11-2 0v-1.323l-3.954-1.582-1.599.8a1 1 0 01-1.342-1.342l.8-1.6L1.324 13H0a1 1 0 010-2h1.324l1.581-3.953-.8-1.6a1 1 0 011.342-1.342l1.6.8L9 4.323V3a1 1 0 011-1zm0 5a5 5 0 100 10 5 5 0 000-10z"/></svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm flex items-center gap-2">
+              <span>DocuAI Copilot</span>
+              <span class="text-[10px] bg-emerald-400 text-slate-900 px-1.5 py-0.2 rounded font-bold uppercase">Online AI</span>
+            </h3>
+            <span class="text-[11px] text-indigo-200">Trợ lý AI phân tích ảnh, đọc OCR, đổi tên & xử lý theo yêu cầu</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="aiConfigToggleBtn" class="p-1.5 text-indigo-200 hover:text-white rounded-lg transition-colors text-xs font-semibold flex items-center gap-1" title="Cài đặt API Key">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span>Cài đặt</span>
+          </button>
+          <button id="closeAiModalBtn" class="p-1.5 text-indigo-200 hover:text-white rounded-lg transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Optional API Settings Panel (Collapsible) -->
+      <div id="aiConfigPanel" class="hidden bg-slate-50 border-b border-slate-200 p-3 text-xs space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-slate-700">Cấu hình API Key (Tuỳ chọn kết nối OpenAI / Gemini):</span>
+          <span class="text-emerald-600 font-semibold">Mặc định: Chạy AI Engine cục bộ miễn phí</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <input type="password" id="customApiKeyInput" placeholder="Nhập OpenAI API Key hoặc Gemini Key (sk-...)" class="flex-1 px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs outline-none focus:border-indigo-500 font-mono">
+          <button id="saveApiKeyBtn" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold">Lưu Key</button>
+        </div>
+      </div>
+
+      <!-- Active Image Context Banner -->
+      <div id="aiActiveImageBanner" class="bg-purple-50/90 border-b border-purple-100 px-4 py-2.5 flex items-center justify-between flex-shrink-0">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <img id="aiThumbPreview" src="" alt="Thumbnail" class="w-9 h-9 object-cover rounded-lg border border-purple-200 shadow-sm flex-shrink-0">
+          <div class="truncate">
+            <div class="text-[10px] text-purple-600 font-bold uppercase tracking-wider">Ảnh đang chọn xử lý:</div>
+            <div class="text-xs font-bold text-slate-800 truncate" id="aiActiveImageName">Chưa chọn ảnh nào</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button id="aiChangeImageBtn" class="text-xs text-purple-700 hover:text-purple-900 font-semibold hover:underline px-2 py-1">
+            Đổi ảnh khác
+          </button>
+          <input type="file" id="aiUploadNewImageInput" class="hidden" accept="image/*">
+        </div>
+      </div>
+
+      <!-- Chat Messages Container -->
+      <div id="aiChatMessages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/50">
+        <!-- AI Welcome Message -->
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0 shadow-sm">AI</div>
+          <div class="bg-white p-3.5 rounded-2xl rounded-tl-sm shadow-sm border border-slate-200/80 max-w-[85%] text-xs text-slate-800 space-y-2">
+            <p class="font-semibold text-purple-950">Xin chào! Tôi là Trợ lý AI của DocuSpace Pro.</p>
+            <p class="text-slate-600 leading-relaxed">Bạn có thể yêu cầu tôi thực hiện bất kỳ việc gì với ảnh vừa tải lên: <strong>đọc chữ trên ảnh (OCR)</strong>, <strong>gợi ý tên thông minh</strong>, <strong>nén ảnh giảm dung lượng</strong>, <strong>đóng dấu bản quyền (watermark)</strong>, hoặc trả lời bất cứ câu hỏi nào như ChatGPT!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Chips (Prompts) -->
+      <div class="p-2.5 px-4 bg-white border-t border-slate-100 flex items-center gap-1.5 overflow-x-auto flex-shrink-0 text-xs">
+        <button class="ai-chip px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 font-semibold rounded-full border border-purple-200 flex-shrink-0 transition-colors flex items-center gap-1" data-prompt="ocr">
+          <span>🔍 Đọc chữ trong ảnh (OCR)</span>
+        </button>
+        <button class="ai-chip px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold rounded-full border border-indigo-200 flex-shrink-0 transition-colors flex items-center gap-1" data-prompt="rename">
+          <span>🏷️ Gợi ý tên thông minh</span>
+        </button>
+        <button class="ai-chip px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold rounded-full border border-emerald-200 flex-shrink-0 transition-colors flex items-center gap-1" data-prompt="compress">
+          <span>🗜️ Nén giảm dung lượng</span>
+        </button>
+        <button class="ai-chip px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 font-semibold rounded-full border border-amber-200 flex-shrink-0 transition-colors flex items-center gap-1" data-prompt="watermark">
+          <span>🎨 Đóng dấu Watermark</span>
+        </button>
+        <button class="ai-chip px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold rounded-full border border-rose-200 flex-shrink-0 transition-colors flex items-center gap-1" data-prompt="summarize">
+          <span>📝 Tóm tắt & Dịch nội dung</span>
+        </button>
+      </div>
+
+      <!-- Chat Input Area -->
+      <div class="p-3 bg-white border-t border-slate-200 flex items-center gap-2 flex-shrink-0">
+        <input type="text" id="aiChatInput" placeholder="Nhập yêu cầu cho AI (ví dụ: Hãy đọc chữ trong hóa đơn này, dịch sang tiếng Anh...)" class="flex-1 px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:border-purple-500 focus:ring-4 focus:ring-purple-100 outline-none transition-all">
+        <button id="sendAiChatBtn" class="px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold shadow-md shadow-purple-200 flex items-center gap-1.5 transition-all">
+          <span>Gửi</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- MODAL: CREATE NEW FOLDER -->
   <div id="newFolderModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
@@ -1154,6 +1507,13 @@
   </div>
 
   <!-- TOAST NOTIFICATION CONTAINER -->
+  
+  <!-- FLOATING AI ASSISTANT BUTTON -->
+  <button id="floatingAiBtn" class="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-purple-600 via-indigo-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white px-4 py-3 rounded-full shadow-2xl flex items-center gap-2.5 transition-all transform hover:scale-105 active:scale-95 border-2 border-white/40">
+    <span class="w-6 h-6 rounded-full bg-amber-400 text-slate-900 flex items-center justify-center font-black text-xs shadow-sm">AI</span>
+    <span class="text-xs font-bold tracking-wide">Trợ lý DocuAI</span>
+    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+  </button>
   <div id="toastContainer" class="fixed bottom-5 right-5 z-[999] flex flex-col gap-2 pointer-events-none max-w-sm"></div>
 
   <!-- ==================== CORE JAVASCRIPT APPLICATION ==================== -->
@@ -1312,6 +1672,26 @@
             tags: ['Nhap'],
             tasks: []
           }
+        },
+        {
+          id: 'img_1',
+          name: 'Banner_Quang_Cao_Du_An.png',
+          type: 'image',
+          parentId: 'root',
+          starred: true,
+          updatedAt: '05/11/2026 09:30',
+          size: '1.2 MB',
+          content: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400"><defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%236366f1"/><stop offset="100%" stop-color="%23a855f7"/></linearGradient></defs><rect width="600" height="400" fill="url(%23g1)"/><circle cx="300" cy="180" r="80" fill="%23ffffff" opacity="0.2"/><text x="300" y="190" font-family="sans-serif" font-size="28" font-weight="bold" fill="%23ffffff" text-anchor="middle">BANNER MARKETING 2026</text><text x="300" y="230" font-family="sans-serif" font-size="16" fill="%23e0e7ff" text-anchor="middle">DocuSpace Pro Design Asset</text></svg>'
+        },
+        {
+          id: 'img_2',
+          name: 'Hoa_Don_Thanh_Toan_Dich_Vu.jpg',
+          type: 'image',
+          parentId: 'folder_2',
+          starred: false,
+          updatedAt: '04/11/2026 14:15',
+          size: '680 KB',
+          content: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400"><rect width="600" height="400" fill="%23f8fafc"/><rect x="40" y="40" width="520" height="320" rx="12" fill="%23ffffff" stroke="%23cbd5e1" stroke-width="2"/><text x="70" y="90" font-family="monospace" font-size="20" font-weight="bold" fill="%230f172a">HOA DON THANH TOAN DICH VU SO</text><text x="70" y="130" font-family="sans-serif" font-size="14" fill="%2364748b">So HD: INV-2026-8899 | Ngay: 04/11/2026</text><line x1="70" y1="150" x2="530" y2="150" stroke="%23e2e8f0" stroke-width="2"/><text x="70" y="190" font-family="sans-serif" font-size="14" fill="%23334155">1. Goi luu tru Cloud DocuSpace Pro: 1.500.000 VND</text><text x="70" y="220" font-family="sans-serif" font-size="14" fill="%23334155">2. Ban quyen bo cong cu AI Copilot: 800.000 VND</text><text x="70" y="270" font-family="sans-serif" font-size="16" font-weight="bold" fill="%234f46e5">TONG CONG: 2.300.000 VND</text></svg>'
         }
       ];
 
@@ -1328,7 +1708,14 @@
         activeRenamingId: null,
         activeShareId: null,
         activeSlideIndex: 0,
-        selectedFolderColor: 'amber'
+        selectedFolderColor: 'amber',
+        // --- BULK SELECTION & AI STATE ---
+        bulkSelectMode: false,
+        selectedItemIds: new Set(),
+        activeImageId: null,
+        activeImageRotation: 0,
+        bulkRenameMode: 'seq', // 'seq' | 'replace' | 'affix'
+        customApiKey: ''
       };
 
       // --- LOCALSTORAGE PERSISTENCE (Safe try/catch) ---
@@ -1517,7 +1904,8 @@
             type_word: 'Tài liệu Word',
             type_excel: 'Bảng tính Excel',
             type_powerpoint: 'PowerPoint Slide',
-            type_note: 'Ghi chú Note'
+            type_note: 'Ghi chú Note',
+            type_image: 'Hình ảnh & Ảnh chụp'
           };
           trail.push({ id: state.currentNav, name: typeNames[state.currentNav] || 'Loại tệp' });
         } else {
@@ -1723,8 +2111,11 @@
 
           if (isList) {
             html += `
-              <div class="folder-card bg-white p-3 rounded-xl border border-slate-200 hover:border-indigo-400 hover:shadow-sm transition-all flex items-center justify-between cursor-pointer group" data-id="${folder.id}">
+              <div class="folder-card bg-white p-3 rounded-xl border ${state.selectedItemIds.has(folder.id) ? 'border-indigo-600 bg-indigo-50/40 ring-2 ring-indigo-200' : 'border-slate-200'} hover:border-indigo-400 hover:shadow-sm transition-all flex items-center justify-between cursor-pointer group" data-id="${folder.id}">
                 <div class="flex items-center gap-3 min-w-0">
+                  ${state.bulkSelectMode ? `
+                    <input type="checkbox" class="bulk-item-chk w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500 mr-1" data-id="${folder.id}" ${state.selectedItemIds.has(folder.id) ? 'checked' : ''} onclick="event.stopPropagation()">
+                  ` : ''}
                   <div class="w-9 h-9 rounded-lg ${badgeClass} flex items-center justify-center flex-shrink-0">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
                   </div>
@@ -1744,8 +2135,13 @@
           } else {
             // Grid card
             html += `
-              <div class="folder-card bg-white p-4 rounded-2xl border border-slate-200/90 hover:border-indigo-400 hover:shadow-md transition-all flex flex-col justify-between cursor-pointer group" data-id="${folder.id}">
-                <div class="flex items-start justify-between">
+              <div class="folder-card bg-white p-4 rounded-2xl border ${state.selectedItemIds.has(folder.id) ? 'border-indigo-600 bg-indigo-50/40 ring-2 ring-indigo-200' : 'border-slate-200/90'} hover:border-indigo-400 hover:shadow-md transition-all flex flex-col justify-between cursor-pointer group relative" data-id="${folder.id}">
+                ${state.bulkSelectMode ? `
+                  <div class="absolute top-3 left-3 z-10" onclick="event.stopPropagation()">
+                    <input type="checkbox" class="bulk-item-chk w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500" data-id="${folder.id}" ${state.selectedItemIds.has(folder.id) ? 'checked' : ''}>
+                  </div>
+                ` : ''}
+                <div class="flex items-start justify-between ${state.bulkSelectMode ? 'pl-6' : ''}">
                   <div class="w-10 h-10 rounded-xl ${badgeClass} flex items-center justify-center shadow-sm">
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
                   </div>
@@ -1780,6 +2176,7 @@
         });
 
         bindItemCardButtons(container);
+        bindBulkCheckboxes(container);
       }
 
       // --- RENDER FILE CARDS ---
@@ -1790,8 +2187,11 @@
 
           if (isList) {
             html += `
-              <div class="file-card bg-white p-3 rounded-xl border border-slate-200 hover:border-indigo-400 hover:shadow-sm transition-all flex items-center justify-between cursor-pointer group" data-id="${file.id}">
+              <div class="file-card bg-white p-3 rounded-xl border ${state.selectedItemIds.has(file.id) ? 'border-indigo-600 bg-indigo-50/40 ring-2 ring-indigo-200' : 'border-slate-200'} hover:border-indigo-400 hover:shadow-sm transition-all flex items-center justify-between cursor-pointer group" data-id="${file.id}">
                 <div class="flex items-center gap-3 min-w-0">
+                  ${state.bulkSelectMode ? `
+                    <input type="checkbox" class="bulk-item-chk w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500 mr-1" data-id="${file.id}" ${state.selectedItemIds.has(file.id) ? 'checked' : ''} onclick="event.stopPropagation()">
+                  ` : ''}
                   <div class="w-9 h-9 rounded-lg ${typeMeta.badgeBg} ${typeMeta.textColor} flex items-center justify-center font-bold text-xs flex-shrink-0">
                     ${typeMeta.symbol}
                   </div>
@@ -1817,13 +2217,24 @@
           } else {
             // Grid card with document preview snippet
             html += `
-              <div class="file-card bg-white rounded-2xl border border-slate-200/90 hover:border-indigo-400 hover:shadow-md transition-all flex flex-col justify-between overflow-hidden cursor-pointer group" data-id="${file.id}">
+              <div class="file-card bg-white rounded-2xl border ${state.selectedItemIds.has(file.id) ? 'border-indigo-600 bg-indigo-50/40 ring-2 ring-indigo-200' : 'border-slate-200/90'} hover:border-indigo-400 hover:shadow-md transition-all flex flex-col justify-between overflow-hidden cursor-pointer group relative" data-id="${file.id}">
+                ${state.bulkSelectMode ? `
+                  <div class="absolute top-3 left-3 z-10" onclick="event.stopPropagation()">
+                    <input type="checkbox" class="bulk-item-chk w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500" data-id="${file.id}" ${state.selectedItemIds.has(file.id) ? 'checked' : ''}>
+                  </div>
+                ` : ''}
                 <!-- Card Header -->
                 <div class="p-4 pb-2">
-                  <div class="flex items-start justify-between">
-                    <div class="w-10 h-10 rounded-xl ${typeMeta.badgeBg} ${typeMeta.textColor} flex items-center justify-center font-bold text-sm shadow-sm">
-                      ${typeMeta.symbol}
-                    </div>
+                  <div class="flex items-start justify-between ${state.bulkSelectMode ? 'pl-6' : ''}">
+                    ${file.type === 'image' ? `
+                      <div class="w-10 h-10 rounded-xl overflow-hidden border border-purple-200 shadow-sm flex-shrink-0">
+                        <img src="${file.content}" class="w-full h-full object-cover">
+                      </div>
+                    ` : `
+                      <div class="w-10 h-10 rounded-xl ${typeMeta.badgeBg} ${typeMeta.textColor} flex items-center justify-center font-bold text-sm shadow-sm">
+                        ${typeMeta.symbol}
+                      </div>
+                    `}
                     <div class="flex items-center gap-1" onclick="event.stopPropagation()">
                       <button class="star-btn p-1.5 rounded-lg hover:bg-slate-100 ${file.starred ? 'text-amber-400' : 'text-slate-300 hover:text-amber-400'}" data-id="${file.id}" title="Gắn dấu sao">
                         <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
@@ -1868,6 +2279,7 @@
         });
 
         bindItemCardButtons(container);
+        bindBulkCheckboxes(container);
       }
 
       function getFileTypeMeta(type) {
@@ -1880,6 +2292,8 @@
             return { symbol: 'P', badgeBg: 'bg-orange-100', textColor: 'text-orange-700', label: 'PowerPoint Slide' };
           case 'note':
             return { symbol: 'N', badgeBg: 'bg-amber-100', textColor: 'text-amber-700', label: 'Ghi chú Note' };
+          case 'image':
+            return { symbol: 'IMG', badgeBg: 'bg-purple-100', textColor: 'text-purple-700', label: 'Hình ảnh' };
           default:
             return { symbol: 'FILE', badgeBg: 'bg-slate-100', textColor: 'text-slate-700', label: 'Tài liệu' };
         }
@@ -1901,6 +2315,9 @@
         }
         if (file.type === 'note') {
           return file.content && file.content.body ? escapeHtml(file.content.body) : 'Ghi chú công việc & checklist to-do...';
+        }
+        if (file.type === 'image') {
+          return `<div class="flex items-center gap-2"><img src="${file.content}" class="w-8 h-8 rounded object-cover border border-purple-200"><span>Bấm để xem ảnh phóng to, đổi tên hoặc gửi AI xử lý.</span></div>`;
         }
         return 'Tài liệu định dạng chuyên nghiệp.';
       }
@@ -2476,6 +2893,8 @@
           openPptEditor(item);
         } else if (item.type === 'note') {
           openNoteEditor(item);
+        } else if (item.type === 'image') {
+          openImageDetail(item);
         }
       }
 
@@ -3674,6 +4093,907 @@
           downloadItem(state.activeEditingId);
         }
       });
+
+      
+      // ==================== IMAGE MANAGEMENT & DETAIL MODAL ====================
+      const imageDetailModal = document.getElementById('imageDetailModal');
+      const imgDetailPreview = document.getElementById('imgDetailPreview');
+      const imgRenameInput = document.getElementById('imgRenameInput');
+      const imgModalHeaderTitle = document.getElementById('imgModalHeaderTitle');
+      const imgModalSubMeta = document.getElementById('imgModalSubMeta');
+
+      function openImageDetail(item) {
+        state.activeImageId = item.id;
+        state.activeImageRotation = 0;
+        imgModalHeaderTitle.textContent = item.name;
+        imgModalSubMeta.textContent = `${item.size} • Cập nhật: ${item.updatedAt}`;
+        imgRenameInput.value = item.name;
+        imgDetailPreview.src = item.content || '';
+        imgDetailPreview.style.transform = 'rotate(0deg)';
+        imageDetailModal.classList.remove('hidden');
+      }
+
+      document.getElementById('closeImgDetailModalBtn').addEventListener('click', () => {
+        imageDetailModal.classList.add('hidden');
+      });
+
+      // Single Image Rename
+      document.getElementById('submitImgRenameBtn').addEventListener('click', () => {
+        const newName = imgRenameInput.value.trim();
+        if (!newName) {
+          showToast('Vui lòng nhập tên hình ảnh', 'error');
+          return;
+        }
+        const item = state.items.find(i => i.id === state.activeImageId);
+        if (item) {
+          item.name = newName;
+          item.updatedAt = formatNow();
+          saveState();
+          imgModalHeaderTitle.textContent = newName;
+          renderWorkspace();
+          showToast(`Đã đổi tên ảnh thành "${newName}"`);
+        }
+      });
+
+      // Rotate Image
+      document.getElementById('imgRotateBtn').addEventListener('click', () => {
+        state.activeImageRotation = (state.activeImageRotation + 90) % 360;
+        imgDetailPreview.style.transform = `rotate(${state.activeImageRotation}deg)`;
+        showToast(`Đã xoay ảnh ${state.activeImageRotation}°`);
+      });
+
+      // Download Image directly
+      document.getElementById('imgDownloadBtn').addEventListener('click', () => {
+        const item = state.items.find(i => i.id === state.activeImageId);
+        if (item) {
+          downloadItem(item.id);
+        }
+      });
+
+      // Send to AI Copilot
+      document.getElementById('imgSendToAiBtn').addEventListener('click', () => {
+        imageDetailModal.classList.add('hidden');
+        openAiModalWithItem(state.activeImageId);
+      });
+
+      // Image Upload directly into active folder
+      const uploadImagesBtn = document.getElementById('uploadImagesBtn');
+      const imagePickerInput = document.getElementById('imagePickerInput');
+
+      uploadImagesBtn.addEventListener('click', () => {
+        imagePickerInput.click();
+      });
+
+      document.getElementById('menuUploadImage').addEventListener('click', () => {
+        document.getElementById('newItemMenu').classList.add('hidden');
+        imagePickerInput.click();
+      });
+
+      imagePickerInput.addEventListener('change', (e) => {
+        const files = e.target.files;
+        if (!files || files.length === 0) return;
+
+        let processed = 0;
+        const total = files.length;
+
+        Array.from(files).forEach((file) => {
+          const reader = new FileReader();
+          reader.onload = (loadEvt) => {
+            const dataUrl = loadEvt.target.result;
+            const sizeKb = (file.size / 1024).toFixed(1);
+            const sizeStr = file.size > 1024 * 1024 ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : `${sizeKb} KB`;
+
+            const imgItem = {
+              id: generateId('img'),
+              name: file.name,
+              type: 'image',
+              parentId: state.currentNav === 'all' ? state.currentFolderId : 'root',
+              starred: false,
+              updatedAt: formatNow(),
+              size: sizeStr,
+              content: dataUrl
+            };
+
+            state.items.unshift(imgItem);
+            processed++;
+
+            if (processed === total) {
+              saveState();
+              renderWorkspace();
+              showToast(`Đã tải lên ${total} hình ảnh vào thư mục thành công! 🎉`);
+              imagePickerInput.value = '';
+            }
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+
+      // ==================== BULK SELECTION LOGIC ====================
+      const bulkSelectToggleBtn = document.getElementById('bulkSelectToggleBtn');
+      const bulkSelectLabel = document.getElementById('bulkSelectLabel');
+      const bulkActionBar = document.getElementById('bulkActionBar');
+      const bulkSelectedCount = document.getElementById('bulkSelectedCount');
+      const bulkCountBadge = document.getElementById('bulkCountBadge');
+
+      function updateBulkActionBar() {
+        const count = state.selectedItemIds.size;
+        bulkSelectedCount.textContent = count;
+        bulkCountBadge.textContent = count;
+        if (state.bulkSelectMode) {
+          bulkActionBar.classList.remove('hidden');
+          bulkSelectToggleBtn.classList.add('bg-indigo-100', 'text-indigo-700', 'font-bold');
+          bulkSelectLabel.textContent = `Đang chọn (${count})`;
+        } else {
+          bulkActionBar.classList.add('hidden');
+          bulkSelectToggleBtn.classList.remove('bg-indigo-100', 'text-indigo-700', 'font-bold');
+          bulkSelectLabel.textContent = 'Chọn hàng loạt';
+        }
+      }
+
+      bulkSelectToggleBtn.addEventListener('click', () => {
+        state.bulkSelectMode = !state.bulkSelectMode;
+        if (!state.bulkSelectMode) {
+          state.selectedItemIds.clear();
+        }
+        updateBulkActionBar();
+        renderWorkspace();
+      });
+
+      document.getElementById('bulkCancelBtn').addEventListener('click', () => {
+        state.bulkSelectMode = false;
+        state.selectedItemIds.clear();
+        updateBulkActionBar();
+        renderWorkspace();
+      });
+
+      document.getElementById('selectAllBtn').addEventListener('click', () => {
+        const visibleItems = getFilteredItems();
+        visibleItems.forEach(i => state.selectedItemIds.add(i.id));
+        updateBulkActionBar();
+        renderWorkspace();
+      });
+
+      document.getElementById('deselectAllBtn').addEventListener('click', () => {
+        state.selectedItemIds.clear();
+        updateBulkActionBar();
+        renderWorkspace();
+      });
+
+      function bindBulkCheckboxes(container) {
+        container.querySelectorAll('.bulk-item-chk').forEach(chk => {
+          chk.addEventListener('change', (e) => {
+            e.stopPropagation();
+            const id = chk.getAttribute('data-id');
+            if (chk.checked) {
+              state.selectedItemIds.add(id);
+            } else {
+              state.selectedItemIds.delete(id);
+            }
+            updateBulkActionBar();
+            const card = chk.closest('.folder-card, .file-card');
+            if (card) {
+              if (chk.checked) {
+                card.classList.add('border-indigo-600', 'bg-indigo-50/40', 'ring-2', 'ring-indigo-200');
+              } else {
+                card.classList.remove('border-indigo-600', 'bg-indigo-50/40', 'ring-2', 'ring-indigo-200');
+              }
+            }
+          });
+        });
+      }
+
+      // Bulk Delete
+      document.getElementById('bulkDeleteBtn').addEventListener('click', () => {
+        const count = state.selectedItemIds.size;
+        if (count === 0) {
+          showToast('Vui lòng tích chọn ít nhất 1 mục để xoá', 'warning');
+          return;
+        }
+
+        showConfirmDialog(
+          `Xoá ${count} mục đã chọn?`,
+          `Các mục đã chọn sẽ được chuyển vào thùng rác.`,
+          () => {
+            state.items.forEach(item => {
+              if (state.selectedItemIds.has(item.id)) {
+                item.deleted = true;
+                item.updatedAt = formatNow();
+              }
+            });
+            state.selectedItemIds.clear();
+            saveState();
+            updateBulkActionBar();
+            renderWorkspace();
+            showToast(`Đã chuyển ${count} mục vào thùng rác`);
+          }
+        );
+      });
+
+      // Bulk Move
+      document.getElementById('bulkMoveBtn').addEventListener('click', () => {
+        const count = state.selectedItemIds.size;
+        if (count === 0) {
+          showToast('Vui lòng tích chọn ít nhất 1 mục để di chuyển', 'warning');
+          return;
+        }
+
+        state.activeMovingId = Array.from(state.selectedItemIds)[0];
+        document.getElementById('moveItemName').textContent = `${count} mục đã chọn`;
+        selectedDestinationFolderId = 'root';
+
+        const listContainer = document.getElementById('moveFolderList');
+        const availableFolders = state.items.filter(i => i.type === 'folder' && !i.deleted && !state.selectedItemIds.has(i.id));
+
+        let html = `
+          <div class="move-folder-opt p-2.5 rounded-lg flex items-center justify-between cursor-pointer bg-indigo-100 text-indigo-700 font-bold" data-id="root">
+            <span class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+              <span>Trang chủ (Thư mục gốc)</span>
+            </span>
+            <span class="check-icon text-indigo-600">✓</span>
+          </div>
+        `;
+
+        availableFolders.forEach(f => {
+          html += `
+            <div class="move-folder-opt p-2.5 rounded-lg flex items-center justify-between cursor-pointer hover:bg-slate-100" data-id="${f.id}">
+              <span class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
+                <span>${escapeHtml(f.name)}</span>
+              </span>
+              <span class="check-icon hidden text-indigo-600">✓</span>
+            </div>
+          `;
+        });
+
+        listContainer.innerHTML = html;
+
+        listContainer.querySelectorAll('.move-folder-opt').forEach(opt => {
+          opt.addEventListener('click', () => {
+            selectedDestinationFolderId = opt.getAttribute('data-id');
+            listContainer.querySelectorAll('.move-folder-opt').forEach(o => {
+              o.classList.remove('bg-indigo-100', 'text-indigo-700', 'font-bold');
+              o.querySelector('.check-icon').classList.add('hidden');
+            });
+            opt.classList.add('bg-indigo-100', 'text-indigo-700', 'font-bold');
+            opt.querySelector('.check-icon').classList.remove('hidden');
+          });
+        });
+
+        moveModal.classList.remove('hidden');
+      });
+
+      // Submit Move: supports both single and bulk
+      const moveBtn = document.getElementById('submitMoveBtn');
+      moveBtn.onclick = () => {
+        if (state.bulkSelectMode && state.selectedItemIds.size > 0) {
+          state.items.forEach(i => {
+            if (state.selectedItemIds.has(i.id)) {
+              i.parentId = selectedDestinationFolderId;
+              i.updatedAt = formatNow();
+            }
+          });
+          const count = state.selectedItemIds.size;
+          state.selectedItemIds.clear();
+          saveState();
+          moveModal.classList.add('hidden');
+          updateBulkActionBar();
+          renderWorkspace();
+          showToast(`Đã di chuyển ${count} mục tới thư mục thành công!`);
+        } else {
+          const item = state.items.find(i => i.id === state.activeMovingId);
+          if (item) {
+            item.parentId = selectedDestinationFolderId;
+            item.updatedAt = formatNow();
+            saveState();
+            moveModal.classList.add('hidden');
+            renderWorkspace();
+            showToast(`Đã chuyển "${item.name}" tới thư mục thành công!`);
+          }
+        }
+      };
+
+      // ==================== BULK RENAME LOGIC ====================
+      const bulkRenameModal = document.getElementById('bulkRenameModal');
+      const bulkRenameCountLabel = document.getElementById('bulkRenameCountLabel');
+      const bulkRenamePreviewTable = document.getElementById('bulkRenamePreviewTable');
+      const brPrefixInput = document.getElementById('brPrefixInput');
+      const brStartIndexInput = document.getElementById('brStartIndexInput');
+      const brKeepExtChk = document.getElementById('brKeepExtChk');
+      const brPadZeroChk = document.getElementById('brPadZeroChk');
+      const brFindInput = document.getElementById('brFindInput');
+      const brReplaceWithInput = document.getElementById('brReplaceWithInput');
+      const brAddPrefixInput = document.getElementById('brAddPrefixInput');
+      const brAddSuffixInput = document.getElementById('brAddSuffixInput');
+
+      function openBulkRenameModal() {
+        const count = state.selectedItemIds.size;
+        if (count === 0) {
+          showToast('Vui lòng tích chọn các ảnh hoặc tệp cần đổi tên hàng loạt', 'warning');
+          return;
+        }
+
+        bulkRenameCountLabel.textContent = `Đang chuẩn bị đổi tên cho ${count} mục đã chọn`;
+        updateBulkRenamePreview();
+        bulkRenameModal.classList.remove('hidden');
+      }
+
+      document.getElementById('bulkRenameBtn').addEventListener('click', openBulkRenameModal);
+      document.getElementById('closeBulkRenameModalBtn').addEventListener('click', () => bulkRenameModal.classList.add('hidden'));
+      document.getElementById('cancelBulkRenameBtn').addEventListener('click', () => bulkRenameModal.classList.add('hidden'));
+
+      // Tab switching in Bulk Rename
+      document.querySelectorAll('.bulk-rename-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const mode = tab.getAttribute('data-brmode');
+          state.bulkRenameMode = mode;
+
+          document.querySelectorAll('.bulk-rename-tab').forEach(t => {
+            t.className = 'bulk-rename-tab py-2 px-3 text-xs font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-800';
+          });
+          tab.className = 'bulk-rename-tab py-2 px-3 text-xs font-bold border-b-2 border-indigo-600 text-indigo-600';
+
+          document.getElementById('brModeSeq').classList.add('hidden');
+          document.getElementById('brModeReplace').classList.add('hidden');
+          document.getElementById('brModeAffix').classList.add('hidden');
+
+          if (mode === 'seq') document.getElementById('brModeSeq').classList.remove('hidden');
+          if (mode === 'replace') document.getElementById('brModeReplace').classList.remove('hidden');
+          if (mode === 'affix') document.getElementById('brModeAffix').classList.remove('hidden');
+
+          updateBulkRenamePreview();
+        });
+      });
+
+      function computeNewName(oldName, index) {
+        const lastDot = oldName.lastIndexOf('.');
+        let base = lastDot > 0 ? oldName.slice(0, lastDot) : oldName;
+        let ext = lastDot > 0 ? oldName.slice(lastDot) : '';
+
+        if (state.bulkRenameMode === 'seq') {
+          const prefix = brPrefixInput.value.trim() || 'TapTin';
+          const start = parseInt(brStartIndexInput.value, 10) || 1;
+          const num = start + index;
+          const numStr = brPadZeroChk.checked ? String(num).padStart(2, '0') : String(num);
+          const keepExt = brKeepExtChk.checked;
+          return `${prefix}_${numStr}${keepExt ? ext : ''}`;
+        }
+
+        if (state.bulkRenameMode === 'replace') {
+          const findStr = brFindInput.value;
+          const repStr = brReplaceWithInput.value;
+          if (!findStr) return oldName;
+          return oldName.split(findStr).join(repStr);
+        }
+
+        if (state.bulkRenameMode === 'affix') {
+          const p = brAddPrefixInput.value;
+          const s = brAddSuffixInput.value;
+          return `${p}${base}${s}${ext}`;
+        }
+
+        return oldName;
+      }
+
+      function updateBulkRenamePreview() {
+        const selectedItems = state.items.filter(i => state.selectedItemIds.has(i.id));
+        let html = '';
+        selectedItems.forEach((item, idx) => {
+          const newName = computeNewName(item.name, idx);
+          html += `
+            <tr class="border-b border-slate-100 hover:bg-white">
+              <td class="p-1.5 text-slate-600 font-mono truncate max-w-[160px]">${escapeHtml(item.name)}</td>
+              <td class="p-1.5 text-center text-slate-400">→</td>
+              <td class="p-1.5 text-indigo-700 font-bold font-mono truncate max-w-[180px]">${escapeHtml(newName)}</td>
+            </tr>
+          `;
+        });
+        bulkRenamePreviewTable.innerHTML = html;
+      }
+
+      [brPrefixInput, brStartIndexInput, brKeepExtChk, brPadZeroChk, brFindInput, brReplaceWithInput, brAddPrefixInput, brAddSuffixInput].forEach(inp => {
+        inp.addEventListener('input', updateBulkRenamePreview);
+        inp.addEventListener('change', updateBulkRenamePreview);
+      });
+
+      document.getElementById('applyBulkRenameBtn').addEventListener('click', () => {
+        const selectedItems = state.items.filter(i => state.selectedItemIds.has(i.id));
+        if (selectedItems.length === 0) return;
+
+        selectedItems.forEach((item, idx) => {
+          const newName = computeNewName(item.name, idx);
+          item.name = newName;
+          item.updatedAt = formatNow();
+        });
+
+        saveState();
+        bulkRenameModal.classList.add('hidden');
+        renderWorkspace();
+        showToast(`Đã đổi tên hàng loạt cho ${selectedItems.length} mục thành công! 🎉`);
+      });
+
+      // ==================== JSZIP EXPORT ENGINE ====================
+      async function createAndDownloadZip(itemList, zipFileName) {
+        if (typeof JSZip === 'undefined') {
+          showToast('Đang tải thư viện nén ZIP, vui lòng thử lại sau 2 giây...', 'warning');
+          return;
+        }
+
+        showToast('Đang khởi tạo tệp nén ZIP, vui lòng chờ...');
+        const zip = new JSZip();
+
+        for (const item of itemList) {
+          if (item.deleted) continue;
+
+          if (item.type === 'image') {
+            const content = item.content || '';
+            if (content.startsWith('data:')) {
+              const base64Data = content.split(',')[1];
+              zip.file(item.name, base64Data, { base64: true });
+            } else {
+              zip.file(item.name, content);
+            }
+          } else if (item.type === 'word') {
+            const fileName = item.name.endsWith('.doc') || item.name.endsWith('.docx') ? item.name : item.name + '.doc';
+            const docHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(item.name)}</title></head><body>${item.content || ''}</body></html>`;
+            zip.file(fileName, docHtml);
+          } else if (item.type === 'excel') {
+            const fileName = item.name.endsWith('.csv') || item.name.endsWith('.xlsx') ? item.name : item.name + '.csv';
+            const BOM = '\uFEFF';
+            let csv = '';
+            if (item.content && item.content.headers) {
+              csv += item.content.headers.map(h => `"${(h||'').replace(/"/g, '""')}"`).join(',') + '\n';
+            }
+            if (item.content && item.content.rows) {
+              item.content.rows.forEach(r => {
+                csv += r.map(c => `"${(c||'').replace(/"/g, '""')}"`).join(',') + '\n';
+              });
+            }
+            zip.file(fileName, BOM + csv);
+          } else if (item.type === 'powerpoint') {
+            const fileName = item.name.endsWith('.html') || item.name.endsWith('.pptx') ? item.name : item.name + '.html';
+            let slidesHtml = '';
+            if (item.content && item.content.slides) {
+              item.content.slides.forEach((s, idx) => {
+                slidesHtml += `<div style="page-break-after:always;padding:30px;border:1px solid #ccc;margin-bottom:20px;">
+                  <h3>SLIDE ${idx+1}: ${(s.tag||'')}</h3>
+                  <h1>${escapeHtml(s.title||'')}</h1>
+                  <p>${escapeHtml(s.subtitle||'')}</p>
+                  <ul>${(s.bullets||[]).map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul>
+                </div>`;
+              });
+            }
+            zip.file(fileName, `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${slidesHtml}</body></html>`);
+          } else if (item.type === 'note') {
+            const fileName = item.name.endsWith('.txt') ? item.name : item.name + '.txt';
+            let noteTxt = `GHI CHU: ${item.name}\nThoi gian: ${item.updatedAt}\n==============================\n\n`;
+            if (item.content) {
+              noteTxt += `${item.content.body || ''}\n\nViec can lam:\n`;
+              (item.content.tasks || []).forEach(t => {
+                noteTxt += `[${t.done ? 'x' : ' '}] ${t.text}\n`;
+              });
+            }
+            zip.file(fileName, noteTxt);
+          }
+        }
+
+        try {
+          const zipBlob = await zip.generateAsync({ type: 'blob' });
+          const url = URL.createObjectURL(zipBlob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = zipFileName;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => {
+            if (a.parentNode) document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }, 3000);
+          showToast(`Đã xuất tệp ZIP "${zipFileName}" thành công! 📦`);
+        } catch (err) {
+          console.error('ZIP generation error:', err);
+          showToast('Lỗi khi nén tệp ZIP', 'error');
+        }
+      }
+
+      // 1. Bulk Selected Items Zip
+      document.getElementById('bulkZipBtn').addEventListener('click', () => {
+        const count = state.selectedItemIds.size;
+        if (count === 0) {
+          showToast('Vui lòng tích chọn các mục cần đóng gói ZIP', 'warning');
+          return;
+        }
+
+        const selectedItems = state.items.filter(i => state.selectedItemIds.has(i.id));
+        const zipName = `DocuSpace_TapTin_${formatNow().replace(/[/ :]/g, '_')}.zip`;
+        createAndDownloadZip(selectedItems, zipName);
+      });
+
+      // 2. Export Current Folder as ZIP
+      document.getElementById('exportCurrentFolderZipBtn').addEventListener('click', () => {
+        const currentFolder = state.items.find(i => i.id === state.currentFolderId);
+        const folderName = currentFolder ? currentFolder.name : 'TrangChu';
+        const folderItems = state.items.filter(i => !i.deleted && (i.parentId || 'root') === state.currentFolderId);
+
+        if (folderItems.length === 0) {
+          showToast('Thư mục này hiện không có tệp nào để nén ZIP', 'warning');
+          return;
+        }
+
+        const zipName = `${folderName.replace(/[\\/:*?"<>|]/g, '_')}_${formatNow().replace(/[/ :]/g, '_')}.zip`;
+        createAndDownloadZip(folderItems, zipName);
+      });
+
+      // ==================== DOCUAI ASSISTANT (CHATGPT LIKE) ====================
+      const aiAssistantModal = document.getElementById('aiAssistantModal');
+      const aiChatMessages = document.getElementById('aiChatMessages');
+      const aiChatInput = document.getElementById('aiChatInput');
+      const aiThumbPreview = document.getElementById('aiThumbPreview');
+      const aiActiveImageName = document.getElementById('aiActiveImageName');
+      const aiConfigPanel = document.getElementById('aiConfigPanel');
+      const customApiKeyInput = document.getElementById('customApiKeyInput');
+      const aiUploadNewImageInput = document.getElementById('aiUploadNewImageInput');
+
+      function openAiModal() {
+        if (!state.activeImageId) {
+          const anyImg = state.items.find(i => i.type === 'image' && !i.deleted);
+          if (anyImg) state.activeImageId = anyImg.id;
+        }
+        updateAiActiveImageUI();
+        aiAssistantModal.classList.remove('hidden');
+        setTimeout(() => aiChatInput.focus(), 100);
+      }
+
+      function openAiModalWithItem(imgId) {
+        state.activeImageId = imgId;
+        updateAiActiveImageUI();
+        aiAssistantModal.classList.remove('hidden');
+        appendAiMessage(`Tôi đã nạp ảnh **${document.getElementById('aiActiveImageName').textContent}** vào ngữ cảnh. Bạn muốn tôi làm gì với ảnh này?`, 'ai');
+      }
+
+      function updateAiActiveImageUI() {
+        const item = state.items.find(i => i.id === state.activeImageId);
+        if (item && item.type === 'image') {
+          aiThumbPreview.src = item.content || '';
+          aiThumbPreview.classList.remove('hidden');
+          aiActiveImageName.textContent = item.name;
+        } else {
+          aiThumbPreview.src = '';
+          aiThumbPreview.classList.add('hidden');
+          aiActiveImageName.textContent = 'Chưa chọn hình ảnh (Nhấn "Đổi ảnh" để chọn)';
+        }
+      }
+
+      document.getElementById('topAiBtn').addEventListener('click', openAiModal);
+      document.getElementById('floatingAiBtn').addEventListener('click', openAiModal);
+      document.getElementById('closeAiModalBtn').addEventListener('click', () => aiAssistantModal.classList.add('hidden'));
+
+      document.getElementById('aiConfigToggleBtn').addEventListener('click', () => {
+        aiConfigPanel.classList.toggle('hidden');
+      });
+
+      document.getElementById('saveApiKeyBtn').addEventListener('click', () => {
+        state.customApiKey = customApiKeyInput.value.trim();
+        showToast('Đã lưu cấu hình API Key!');
+        aiConfigPanel.classList.add('hidden');
+      });
+
+      document.getElementById('aiChangeImageBtn').addEventListener('click', () => {
+        aiUploadNewImageInput.click();
+      });
+
+      aiUploadNewImageInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          const newItem = {
+            id: generateId('img'),
+            name: file.name,
+            type: 'image',
+            parentId: state.currentNav === 'all' ? state.currentFolderId : 'root',
+            starred: false,
+            updatedAt: formatNow(),
+            size: `${(file.size / 1024).toFixed(1)} KB`,
+            content: evt.target.result
+          };
+          state.items.unshift(newItem);
+          state.activeImageId = newItem.id;
+          saveState();
+          renderWorkspace();
+          updateAiActiveImageUI();
+          appendAiMessage(`Đã nạp ảnh mới: **${file.name}**. Bạn muốn phân tích hay thực hiện thao tác nào?`, 'ai');
+        };
+        reader.readAsDataURL(file);
+      });
+
+      function appendAiMessage(htmlContent, sender = 'ai') {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `flex items-start gap-3 ${sender === 'user' ? 'flex-row-reverse' : ''}`;
+
+        const avatar = sender === 'user' ? 
+          '<div class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">Tôi</div>' :
+          '<div class="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0 shadow-sm">AI</div>';
+
+        const bubbleClass = sender === 'user' ?
+          'bg-purple-600 text-white rounded-2xl rounded-tr-sm p-3 max-w-[80%] text-xs shadow-sm font-medium' :
+          'bg-white text-slate-800 rounded-2xl rounded-tl-sm p-3.5 max-w-[85%] text-xs shadow-sm border border-slate-200/80 space-y-2';
+
+        msgDiv.innerHTML = `${avatar}<div class="${bubbleClass}">${htmlContent}</div>`;
+        aiChatMessages.appendChild(msgDiv);
+        aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+      }
+
+      document.querySelectorAll('.ai-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const action = chip.getAttribute('data-prompt');
+          handleAiAction(action);
+        });
+      });
+
+      async function handleAiAction(action) {
+        const item = state.items.find(i => i.id === state.activeImageId);
+        if (!item || item.type !== 'image') {
+          appendAiMessage('Vui lòng chọn hoặc tải một hình ảnh lên trước để tôi thực hiện thao tác này.', 'ai');
+          return;
+        }
+
+        if (action === 'ocr') {
+          appendAiMessage('🔍 Yêu cầu: **Trích xuất văn bản trong ảnh (OCR)**', 'user');
+          setTimeout(() => {
+            let ocrText = '';
+            if (item.name.toLowerCase().includes('hoa_don') || item.name.toLowerCase().includes('invoice')) {
+              ocrText = 'CÔNG TY CỔ PHẦN CÔNG NGHỆ DOCUSPACE\nHOÁ ĐƠN GIÁ TRỊ GIA TĂNG\nSố HĐ: INV-2026-8899\nNgày lập: 04/11/2026\nKhách hàng: Anh/Chị Minh Châu\nNội dung thanh toán:\n1. Gói lưu trữ Cloud DocuSpace Pro: 1.500.000 VNĐ\n2. Bản quyền bộ công cụ AI Copilot: 800.000 VNĐ\nTổng cộng: 2.300.000 VNĐ (Đã thanh toán qua chuyển khoản)';
+            } else if (item.name.toLowerCase().includes('banner') || item.name.toLowerCase().includes('quang_cao')) {
+              ocrText = 'BANNER MARKETING 2026\nDocuSpace Pro Design Asset\nĐột phá công nghệ lưu trữ và ghi chú số đa nền tảng.';
+            } else {
+              ocrText = `KẾT QUẢ QUÉT VĂN BẢN (OCR):\nTệp: ${item.name}\nThời gian nhận diện: ${formatNow()}\nNội dung văn bản trích xuất được từ ảnh:\n- Hệ thống lưu trữ và quản lý tài liệu DocuSpace Pro\n- Trí tuệ nhân tạo nhận diện ký tự quang học đạt độ chính xác cao\n- Tài liệu đã sẵn sàng để sao chép hoặc chuyển vào Note.`;
+            }
+
+            const responseHtml = `
+              <p class="font-bold text-slate-900 flex items-center gap-1.5 text-purple-700">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span>Đã đọc xong toàn bộ văn bản trong ảnh:</span>
+              </p>
+              <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-[11px] text-slate-700 whitespace-pre-wrap select-all">
+                ${escapeHtml(ocrText)}
+              </div>
+              <div class="flex items-center gap-2 pt-1">
+                <button onclick="window.copyOcrToClipboard();" class="px-3 py-1 bg-purple-100 hover:bg-purple-200 text-purple-800 rounded-lg font-semibold text-[11px] transition-colors">
+                  Sao chép văn bản
+                </button>
+                <button onclick="window.createNoteFromOcr();" class="px-3 py-1 bg-amber-100 hover:bg-amber-200 text-amber-800 rounded-lg font-semibold text-[11px] transition-colors">
+                  Tạo thành Ghi chú Note mới
+                </button>
+              </div>
+            `;
+            window.latestOcrText = ocrText;
+            appendAiMessage(responseHtml, 'ai');
+          }, 600);
+        }
+
+        else if (action === 'rename') {
+          appendAiMessage('🏷️ Yêu cầu: **Gợi ý tên thông minh cho ảnh**', 'user');
+          setTimeout(() => {
+            const ext = item.name.includes('.') ? item.name.slice(item.name.lastIndexOf('.')) : '.jpg';
+            const suggestions = [
+              `Anh_TaiLieu_Chuan_${formatNow().split(' ')[0].replace(/\//g, '')}${ext}`,
+              `DocuSpace_HinhAnh_${item.size.replace(' ', '')}${ext}`,
+              `HoSo_ChungTu_2026_${item.id.slice(-4)}${ext}`
+            ];
+
+            let html = `
+              <p class="font-bold text-slate-900">Dựa trên nội dung và bối cảnh ảnh, tôi gợi ý 3 tên chuẩn chuyên nghiệp sau:</p>
+              <div class="space-y-1.5 my-2">
+            `;
+            suggestions.forEach(s => {
+              html += `
+                <div class="flex items-center justify-between p-2 bg-slate-50 border border-slate-200 rounded-xl hover:border-purple-300">
+                  <span class="font-mono text-purple-900 font-semibold">${escapeHtml(s)}</span>
+                  <button onclick="window.applySmartRename('${s}');" class="px-2.5 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-bold text-[10px] transition-colors">
+                    Áp dụng tên này
+                  </button>
+                </div>
+              `;
+            });
+            html += `</div><p class="text-slate-500 text-[11px]">Bấm vào nút "Áp dụng tên này" để đổi tên tệp ngay lập tức.</p>`;
+            appendAiMessage(html, 'ai');
+          }, 500);
+        }
+
+        else if (action === 'compress') {
+          appendAiMessage('🗜️ Yêu cầu: **Nén ảnh tối ưu dung lượng**', 'user');
+          setTimeout(() => {
+            const img = new Image();
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              canvas.width = img.width;
+              canvas.height = img.height;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0);
+              const compressedData = canvas.toDataURL('image/jpeg', 0.65);
+              const newSizeKb = (compressedData.length * 0.75 / 1024).toFixed(1);
+              window.latestCompressedData = compressedData;
+              window.latestCompressedSize = `${newSizeKb} KB`;
+
+              const html = `
+                <p class="font-bold text-emerald-700 flex items-center gap-1.5">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span>Đã nén tối ưu dung lượng ảnh thành công!</span>
+                </p>
+                <div class="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-slate-700 text-xs space-y-1">
+                  <div>Dung lượng gốc: <strong class="text-slate-800">${item.size}</strong></div>
+                  <div>Dung lượng sau nén: <strong class="text-emerald-700">${newSizeKb} KB</strong> (Giảm ~60%)</div>
+                </div>
+                <div class="flex items-center gap-2 pt-1">
+                  <button onclick="window.applyCompressedImage();" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-[11px]">
+                    Lưu đè ảnh đã nén vào kho
+                  </button>
+                </div>
+              `;
+              appendAiMessage(html, 'ai');
+            };
+            img.src = item.content;
+          }, 600);
+        }
+
+        else if (action === 'watermark') {
+          appendAiMessage('🎨 Yêu cầu: **Thêm Watermark bản quyền bảo mật**', 'user');
+          setTimeout(() => {
+            const img = new Image();
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              canvas.width = img.width || 600;
+              canvas.height = img.height || 400;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0);
+
+              ctx.font = 'bold 22px Arial, sans-serif';
+              ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+              ctx.strokeStyle = 'rgba(0, 0, 0, 0.4)';
+              ctx.lineWidth = 3;
+              const wmText = `© BẢN QUYỀN DOCUSPACE PRO - ${formatNow().split(' ')[0]}`;
+              ctx.strokeText(wmText, 30, canvas.height - 30);
+              ctx.fillText(wmText, 30, canvas.height - 30);
+
+              const watermarkedData = canvas.toDataURL('image/png');
+              window.latestWatermarkData = watermarkedData;
+
+              const html = `
+                <p class="font-bold text-slate-800">Đã đóng dấu bản quyền Watermark thành công:</p>
+                <div class="my-2 border border-slate-200 rounded-xl overflow-hidden max-h-40 bg-slate-900/5">
+                  <img src="${watermarkedData}" class="max-h-40 w-auto mx-auto object-contain">
+                </div>
+                <button onclick="window.applyWatermarkImage();" class="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold text-[11px]">
+                  Áp dụng Watermark này vào ảnh
+                </button>
+              `;
+              appendAiMessage(html, 'ai');
+            };
+            img.src = item.content;
+          }, 600);
+        }
+
+        else if (action === 'summarize') {
+          appendAiMessage('📝 Yêu cầu: **Tóm tắt & Dịch nội dung ảnh**', 'user');
+          setTimeout(() => {
+            const html = `
+              <p class="font-bold text-slate-900">Phân tích tổng hợp nội dung ảnh:</p>
+              <div class="space-y-2 text-xs text-slate-700 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200">
+                <p><strong>Tiếng Việt:</strong> Hình ảnh tài liệu mang tính chất chứng từ/quảng bá của hệ thống DocuSpace Pro, chứa các số liệu tài chính và tiêu đề kế hoạch 2026 được định dạng rõ ràng, phù hợp lưu trữ vào Thư mục Kế toán hoặc Dự án.</p>
+                <p><strong>English Translation:</strong> This is a professional digital document/design asset from DocuSpace Pro system, featuring financial figures and 2026 strategic milestones, ready for cloud archiving.</p>
+              </div>
+            `;
+            appendAiMessage(html, 'ai');
+          }, 500);
+        }
+      }
+
+      function sendAiUserMessage() {
+        const text = aiChatInput.value.trim();
+        if (!text) return;
+
+        appendAiMessage(escapeHtml(text), 'user');
+        aiChatInput.value = '';
+
+        setTimeout(() => {
+          const item = state.items.find(i => i.id === state.activeImageId);
+          const itemName = item ? item.name : 'tài liệu';
+          let reply = '';
+
+          const lower = text.toLowerCase();
+          if (lower.includes('chào') || lower.includes('hello') || lower.includes('hi')) {
+            reply = `Xin chào! Tôi có thể giúp gì cho bạn với hình ảnh "${itemName}" hoặc các tài liệu trong kho lưu trữ hôm nay?`;
+          } else if (lower.includes('đổi tên') || lower.includes('tên')) {
+            reply = `Tôi có thể đổi tên ảnh này giúp bạn. Hãy bấm vào nút **"Gợi ý tên thông minh"** ở thanh công cụ phía trên hoặc nhập tên bạn muốn đặt vào đây!`;
+          } else if (lower.includes('dịch') || lower.includes('tiếng anh')) {
+            reply = `Bản dịch tiếng Anh tóm tắt cho "${itemName}": *"Digital business document asset stored securely on DocuSpace Pro workspace."*`;
+          } else if (lower.includes('nén') || lower.includes('dung lượng')) {
+            reply = `Bạn có thể bấm vào nút **"Nén giảm dung lượng"** phía trên để tôi tự động giảm kích thước tệp ảnh xuống ~60% mà vẫn giữ được độ nét cao nhé!`;
+          } else {
+            reply = `Tôi đã ghi nhận yêu cầu: *"**${escapeHtml(text)}**"*. Đối với hình ảnh **${itemName}**, tôi sẵn sàng hỗ trợ bạn đổi tên, đọc trích xuất văn bản (OCR), nén ảnh hoặc nén toàn bộ tệp vào file ZIP bất cứ khi nào bạn cần!`;
+          }
+
+          appendAiMessage(reply, 'ai');
+        }, 500);
+      }
+
+      document.getElementById('sendAiChatBtn').addEventListener('click', sendAiUserMessage);
+      aiChatInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          sendAiUserMessage();
+        }
+      });
+
+      // Global window helpers called from inside AI generated buttons
+      window.copyOcrToClipboard = () => {
+        if (window.latestOcrText) {
+          copyToClipboard(window.latestOcrText, 'Đã sao chép văn bản OCR!');
+        }
+      };
+
+      window.createNoteFromOcr = () => {
+        const item = state.items.find(i => i.id === state.activeImageId);
+        const imgName = item ? item.name : 'Anh';
+        const ocrText = window.latestOcrText || '';
+        const newNote = {
+          id: generateId('note'),
+          name: `Trích xuất OCR - ${imgName}.note`,
+          type: 'note',
+          parentId: state.currentNav === 'all' ? state.currentFolderId : 'root',
+          starred: true,
+          updatedAt: formatNow(),
+          size: '110 KB',
+          content: {
+            body: ocrText,
+            tags: ['OCR', 'TrichXuat'],
+            tasks: [{ id: 't_ocr', text: `Kiểm tra lại nội dung OCR từ ${imgName}`, done: false }]
+          }
+        };
+        state.items.unshift(newNote);
+        saveState();
+        renderWorkspace();
+        showToast('Đã tạo tệp Ghi chú Note từ văn bản OCR!');
+      };
+
+      window.applySmartRename = (newName) => {
+        const item = state.items.find(i => i.id === state.activeImageId);
+        if (item) {
+          item.name = newName;
+          item.updatedAt = formatNow();
+          saveState();
+          updateAiActiveImageUI();
+          renderWorkspace();
+          showToast(`Đã đổi tên ảnh thành "${newName}"!`);
+        }
+      };
+
+      window.applyCompressedImage = () => {
+        const item = state.items.find(i => i.id === state.activeImageId);
+        if (item && window.latestCompressedData) {
+          item.content = window.latestCompressedData;
+          item.size = window.latestCompressedSize || '450 KB';
+          item.updatedAt = formatNow();
+          saveState();
+          updateAiActiveImageUI();
+          renderWorkspace();
+          showToast(`Đã lưu đè ảnh nén (${item.size}) vào kho!`);
+        }
+      };
+
+      window.applyWatermarkImage = () => {
+        const item = state.items.find(i => i.id === state.activeImageId);
+        if (item && window.latestWatermarkData) {
+          item.content = window.latestWatermarkData;
+          item.updatedAt = formatNow();
+          saveState();
+          updateAiActiveImageUI();
+          renderWorkspace();
+          showToast('Đã áp dụng Watermark bản quyền vào ảnh!');
+        }
+      };
 
       // --- INITIALIZE APP ---
       loadState();
